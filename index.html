@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Courses Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>My Courses</h1>
+        <div class="filter-section">
+            <label for="period">Running Period</label>
+            <select id="period">
+                <option>2024, Even Semester</option>
+                <option>2023, Odd Semester</option>
+            </select>
+        </div>
+    </header>
+
+    <nav class="tabs">
+        <button class="tab-btn" onclick="filterTabs('CL')">CL</button>
+        <button class="tab-btn" onclick="filterTabs('LAB')">LAB</button>
+        <button class="tab-btn active" onclick="filterTabs('LEC')">LEC</button>
+    </nav>
+
+    <main class="course-grid" id="courseGrid">
+        </main>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
