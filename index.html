@@ -1,6 +1,35 @@
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BinusMaya</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --color-background-primary:#ffffff;
+  --color-background-secondary:#f3f4f6;
+  --color-background-tertiary:#f9fafb;
+  --color-background-success:#dcfce7;
+  --color-background-danger:#fee2e2;
+  --color-background-warning:#fef9c3;
+  --color-background-info:#dbeafe;
+  --color-text-primary:#111827;
+  --color-text-secondary:#6b7280;
+  --color-text-tertiary:#9ca3af;
+  --color-text-success:#15803d;
+  --color-text-danger:#dc2626;
+  --color-text-warning:#b45309;
+  --color-text-info:#1d4ed8;
+  --color-border-tertiary:#e5e7eb;
+  --color-border-success:#bbf7d0;
+  --color-border-danger:#fecaca;
+  --font-sans:system-ui,-apple-system,sans-serif;
+  --font-mono:'SF Mono','Fira Mono',monospace;
+  --border-radius-md:8px;
+  --border-radius-lg:12px;
+}
 body{font-family:var(--font-sans,system-ui);background:var(--color-background-tertiary);color:var(--color-text-primary);min-height:600px;}
 .app{display:flex;flex-direction:column;height:650px;}
 .topbar{display:flex;align-items:center;height:48px;background:var(--color-background-primary);border-bottom:0.5px solid var(--color-border-tertiary);flex-shrink:0;}
@@ -23,7 +52,6 @@ body{font-family:var(--font-sans,system-ui);background:var(--color-background-te
 .notif-sub{font-size:11px;color:var(--color-text-secondary);margin-top:1px;}
 .notif-time{font-size:10px;color:var(--color-text-tertiary);margin-top:2px;}
 .notif-dot{width:6px;height:6px;border-radius:50%;background:#e87722;display:inline-block;margin-right:6px;}
-
 .body{display:flex;flex:1;overflow:hidden;}
 .sidebar{width:180px;flex-shrink:0;background:var(--color-background-primary);border-right:0.5px solid var(--color-border-tertiary);display:flex;flex-direction:column;overflow-y:auto;padding:12px 0;}
 .role-chip{margin:0 10px 10px;padding:10px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-tertiary);background:var(--color-background-secondary);}
@@ -38,12 +66,9 @@ body{font-family:var(--font-sans,system-ui);background:var(--color-background-te
 .nav-link.active::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2.5px;background:#e87722;border-radius:0 2px 2px 0;}
 .nav-link i{font-size:14px;width:16px;text-align:center;}
 .nav-nbadge{margin-left:auto;font-size:9px;font-weight:500;background:var(--color-background-danger);color:var(--color-text-danger);padding:1px 5px;border-radius:9px;}
-
 .main{flex:1;overflow-y:auto;}
 .page{display:none;padding:20px;}
 .page.active{display:block;}
-
-/* HERO */
 .hero{border-radius:var(--border-radius-lg);background:linear-gradient(120deg,#0d2b5e 0%,#1a4080 60%,#8b2500 100%);padding:22px 24px;margin-bottom:18px;display:flex;align-items:center;justify-content:space-between;position:relative;overflow:hidden;}
 .hero::before{content:'';position:absolute;right:-40px;top:-40px;width:200px;height:200px;border-radius:50%;background:rgba(255,255,255,0.03);}
 .hero-greet{color:rgba(255,255,255,0.55);font-size:12px;}
@@ -54,14 +79,12 @@ body{font-family:var(--font-sans,system-ui);background:var(--color-background-te
 .hero-class-sub{font-size:11px;color:rgba(255,255,255,0.55);margin-top:1px;}
 .hero-time{font-size:11px;color:#e87722;margin-top:4px;font-weight:500;}
 .hero-open{margin-top:8px;background:#e87722;color:#fff;border:none;padding:6px 14px;border-radius:6px;font-size:11px;font-weight:500;cursor:pointer;}
-
 .quick-row{display:flex;gap:8px;margin-bottom:18px;overflow-x:auto;padding-bottom:2px;}
 .quick-row::-webkit-scrollbar{height:3px;}
 .qbtn{display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;flex-shrink:0;}
 .qbtn-icon{width:44px;height:44px;border-radius:var(--border-radius-md);background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);display:flex;align-items:center;justify-content:center;color:var(--color-text-secondary);font-size:18px;transition:all .2s;}
 .qbtn:hover .qbtn-icon{border-color:#e87722;color:#e87722;background:rgba(232,119,34,0.06);}
 .qbtn-lbl{font-size:10px;color:var(--color-text-secondary);white-space:nowrap;}
-
 .g3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:18px;}
 .g-auto{display:grid;grid-template-columns:1.15fr .85fr;gap:14px;}
 .card{background:var(--color-background-primary);border-radius:var(--border-radius-lg);border:0.5px solid var(--color-border-tertiary);padding:16px;}
@@ -73,7 +96,6 @@ body{font-family:var(--font-sans,system-ui);background:var(--color-background-te
 .tab-row{display:flex;gap:4px;margin-bottom:10px;}
 .tab-btn{padding:4px 10px;border-radius:5px;font-size:11px;font-weight:500;cursor:pointer;background:var(--color-background-secondary);color:var(--color-text-secondary);border:none;transition:all .15s;}
 .tab-btn.active{background:#e87722;color:#fff;}
-
 .course-card{background:var(--color-background-primary);border-radius:var(--border-radius-lg);border:0.5px solid var(--color-border-tertiary);overflow:hidden;cursor:pointer;transition:border-color .2s;}
 .course-card:hover{border-color:#e87722;}
 .cc-head{padding:16px;position:relative;}
@@ -94,7 +116,6 @@ body{font-family:var(--font-sans,system-ui);background:var(--color-background-te
 .cc-meta-item{font-size:11px;color:var(--color-text-secondary);display:flex;align-items:center;gap:4px;}
 .cc-meta-item i{font-size:12px;}
 .cc-session{font-size:11px;font-weight:500;color:#e87722;margin-top:8px;padding:4px 9px;border-radius:5px;background:rgba(232,119,34,0.08);display:inline-block;}
-
 .todo-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:0.5px solid var(--color-border-tertiary);}
 .todo-item:last-child{border:none;}
 .todo-ic{width:32px;height:32px;border-radius:var(--border-radius-md);background:rgba(232,119,34,0.08);display:flex;align-items:center;justify-content:center;color:#e87722;font-size:14px;flex-shrink:0;}
@@ -102,14 +123,12 @@ body{font-family:var(--font-sans,system-ui);background:var(--color-background-te
 .todo-s{font-size:11px;color:var(--color-text-secondary);margin-top:1px;}
 .todo-tag{margin-left:auto;font-size:10px;font-weight:500;color:#e87722;background:rgba(232,119,34,0.08);padding:3px 7px;border-radius:4px;white-space:nowrap;flex-shrink:0;}
 .todo-tag.late{color:var(--color-text-danger);background:var(--color-background-danger);}
-
 .inbox-item{padding:9px 0;border-bottom:0.5px solid var(--color-border-tertiary);cursor:pointer;}
 .inbox-item:last-child{border:none;}
 .inbox-from{font-size:11px;color:var(--color-text-info);font-weight:500;margin-bottom:1px;}
 .inbox-subj{font-size:12px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .inbox-prev{font-size:11px;color:var(--color-text-tertiary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .inbox-time{font-size:10px;color:var(--color-text-tertiary);font-family:var(--font-mono);margin-top:1px;}
-
 .att-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;}
 .att-box{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:10px;}
 .att-status{font-size:11px;font-weight:500;margin-bottom:6px;display:flex;align-items:center;gap:5px;}
@@ -125,8 +144,6 @@ body{font-family:var(--font-sans,system-ui);background:var(--color-background-te
 .compass-desc{font-size:12px;color:var(--color-text-secondary);line-height:1.55;text-align:center;margin-top:6px;}
 .compass-cta{margin-top:12px;width:100%;padding:8px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-tertiary);background:transparent;cursor:pointer;font-size:12px;color:var(--color-text-secondary);}
 .compass-cta:hover{background:var(--color-background-secondary);}
-
-/* COURSE DETAIL */
 .cd-back{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--color-text-secondary);cursor:pointer;margin-bottom:14px;padding:4px 0;}
 .cd-back:hover{color:var(--color-text-primary);}
 .cd-header{background:var(--color-background-primary);border-radius:var(--border-radius-lg);border:0.5px solid var(--color-border-tertiary);padding:18px;margin-bottom:12px;}
@@ -172,8 +189,6 @@ body{font-family:var(--font-sans,system-ui);background:var(--color-background-te
 .mini-att-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:0.5px solid var(--color-border-tertiary);font-size:12px;}
 .mini-att-row:last-child{border:none;}
 .fac-avatar{width:36px;height:36px;border-radius:50%;background:var(--color-background-secondary);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;color:var(--color-text-secondary);border:0.5px solid var(--color-border-tertiary);flex-shrink:0;}
-
-/* FORUM */
 .forum-post{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:14px;margin-bottom:10px;}
 .forum-post-hd{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
 .forum-avatar{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500;color:#fff;flex-shrink:0;}
@@ -188,7 +203,6 @@ body{font-family:var(--font-sans,system-ui);background:var(--color-background-te
 .forum-reply{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:10px;margin-top:8px;border-left:2px solid #e87722;}
 .forum-reply-text{font-size:12px;color:var(--color-text-secondary);line-height:1.5;}
 .forum-reply-auth{font-size:11px;font-weight:500;margin-bottom:3px;}
-
 .forum-compose{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:14px;margin-bottom:14px;}
 .forum-compose-title{font-size:13px;font-weight:500;margin-bottom:10px;}
 .compose-input{width:100%;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:8px 10px;font-size:12px;background:var(--color-background-secondary);color:var(--color-text-primary);resize:none;font-family:inherit;}
@@ -201,8 +215,6 @@ body{font-family:var(--font-sans,system-ui);background:var(--color-background-te
 .file-preview{display:flex;align-items:center;gap:8px;background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:7px 10px;margin-top:6px;font-size:11px;}
 .file-preview-name{color:var(--color-text-secondary);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .file-remove{color:var(--color-text-danger);cursor:pointer;font-size:14px;}
-
-/* GRADEBOOK */
 .grade-table{width:100%;border-collapse:collapse;font-size:12px;}
 .grade-table th{text-align:left;padding:8px 10px;background:var(--color-background-secondary);font-size:11px;font-weight:500;color:var(--color-text-secondary);border-bottom:0.5px solid var(--color-border-tertiary);}
 .grade-table td{padding:10px;border-bottom:0.5px solid var(--color-border-tertiary);}
@@ -216,8 +228,6 @@ body{font-family:var(--font-sans,system-ui);background:var(--color-background-te
 .grade-stat{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:12px;text-align:center;}
 .grade-stat-val{font-size:20px;font-weight:500;margin-bottom:2px;}
 .grade-stat-lbl{font-size:11px;color:var(--color-text-secondary);}
-
-/* ATTENDANCE TAB */
 .att-table{width:100%;border-collapse:collapse;font-size:12px;}
 .att-table th{text-align:left;padding:8px 10px;background:var(--color-background-secondary);font-size:11px;font-weight:500;color:var(--color-text-secondary);border-bottom:0.5px solid var(--color-border-tertiary);}
 .att-table td{padding:10px;border-bottom:0.5px solid var(--color-border-tertiary);}
@@ -231,8 +241,6 @@ body{font-family:var(--font-sans,system-ui);background:var(--color-background-te
 .att-sum-box{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:10px 14px;display:flex;align-items:center;gap:10px;}
 .att-sum-num{font-size:20px;font-weight:500;}
 .att-sum-lbl{font-size:11px;color:var(--color-text-secondary);}
-
-/* PEOPLE */
 .people-search{display:flex;align-items:center;gap:8px;margin-bottom:14px;}
 .people-search input{flex:1;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:7px 10px;font-size:12px;background:var(--color-background-secondary);color:var(--color-text-primary);font-family:inherit;}
 .people-search input:focus{outline:none;border-color:#e87722;}
@@ -244,8 +252,6 @@ body{font-family:var(--font-sans,system-ui);background:var(--color-background-te
 .people-nim{font-size:11px;color:var(--color-text-tertiary);font-family:var(--font-mono);}
 .people-role-badge{display:inline-flex;font-size:10px;padding:2px 7px;border-radius:4px;margin-top:5px;}
 .people-highlight{border:1.5px solid #e87722;background:rgba(232,119,34,0.04);}
-
-/* ASSESSMENT */
 .assess-doc{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:14px;margin-bottom:10px;display:flex;align-items:center;gap:12px;cursor:pointer;}
 .assess-doc:hover{border-color:#e87722;}
 .assess-doc-icon{width:38px;height:38px;border-radius:var(--border-radius-md);background:rgba(232,119,34,0.08);display:flex;align-items:center;justify-content:center;color:#e87722;font-size:18px;flex-shrink:0;}
@@ -253,7 +259,6 @@ body{font-family:var(--font-sans,system-ui);background:var(--color-background-te
 .assess-doc-meta{font-size:11px;color:var(--color-text-secondary);margin-top:2px;}
 .assess-doc-dl{margin-left:auto;display:flex;align-items:center;gap:5px;font-size:11px;color:var(--color-text-secondary);padding:5px 9px;border-radius:5px;border:0.5px solid var(--color-border-tertiary);cursor:pointer;}
 .assess-doc-dl:hover{background:var(--color-background-secondary);}
-
 .quiz-section{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:16px;}
 .quiz-title{font-size:14px;font-weight:500;margin-bottom:4px;}
 .quiz-meta{font-size:11px;color:var(--color-text-secondary);margin-bottom:14px;display:flex;gap:12px;}
@@ -268,8 +273,6 @@ body{font-family:var(--font-sans,system-ui);background:var(--color-background-te
 .quiz-submit{background:#e87722;color:#fff;border:none;padding:9px 20px;border-radius:var(--border-radius-md);font-size:12px;font-weight:500;cursor:pointer;margin-top:4px;}
 .quiz-submit:hover{opacity:.85;}
 .quiz-submit:disabled{opacity:.5;cursor:default;}
-
-/* TOAST */
 .toast{position:fixed;bottom:20px;right:20px;background:#1a1d2e;color:#fff;padding:12px 18px;border-radius:var(--border-radius-md);font-size:13px;font-weight:500;z-index:9999;display:none;align-items:center;gap:8px;box-shadow:0 4px 20px rgba(0,0,0,.2);}
 .toast.show{display:flex;}
 .toast i{color:#22c55e;font-size:16px;}
@@ -348,7 +351,7 @@ body{font-family:var(--font-sans,system-ui);background:var(--color-background-te
         </div>
         <div class="g-auto">
           <div style="display:flex;flex-direction:column;gap:12px;">
-            <div class="card"><div class="card-hd"><div class="card-title">Learning to-do list <span style="font-size:11px;color:var(--color-text-danger);font-weight:500;margin-left:4px;">32 tasks</span></div><span class="card-more">See all →</span></div><div class="tab-row"><button class="tab-btn active" onclick="switchTab(this)">All</button><button class="tab-btn" onclick="switchTab(this)">Assessment</button><button class="tab-btn" onclick="switchTab(this)">WiFi</button><button class="tab-btn" onclick="switchTab(this)">Forum</button></div><div class="todo-item"><div class="todo-ic"><i class="ti ti-file-description" aria-hidden="true"></i></div><div><div class="todo-t">Complete article resource</div><div class="todo-s">Session 10 · Mobile Hybrid Solution</div></div><div class="todo-tag">1h 30m</div></div><div class="todo-item"><div class="todo-ic"><i class="ti ti-link" aria-hidden="true"></i></div><div><div class="todo-t">Complete link resource</div><div class="todo-s">Session 10 · Artificial Intelligence</div></div><div class="todo-tag">1h 30m</div></div><div class="todo-item"><div class="todo-ic"><i class="ti ti-wifi" aria-hidden="true"></i></div><div><div class="todo-t">WiFi attendance check-in</div><div class="todo-s">Session 10 · Calculus</div></div><div class="todo-tag">2h 00m</div></div><div class="todo-item" onclick="hAssignmentSubmit()" style="cursor:pointer;"><div class="todo-ic" style="background:var(--color-background-danger);color:var(--color-text-danger);"><i class="ti ti-pencil" aria-hidden="true"></i></div><div><div class="todo-t">Submit Assignment 3</div><div class="todo-s">Session 9 · Computational Biology</div></div><div class="todo-tag late">Overdue</div></div></div>
+            <div class="card"><div class="card-hd"><div class="card-title">Learning to-do list <span style="font-size:11px;color:var(--color-text-danger);font-weight:500;margin-left:4px;">32 tasks</span></div><span class="card-more">See all →</span></div><div class="tab-row"><button class="tab-btn active" onclick="switchTab(this)">All</button><button class="tab-btn" onclick="switchTab(this)">Assessment</button><button class="tab-btn" onclick="switchTab(this)">WiFi</button><button class="tab-btn" onclick="switchTab(this)">Forum</button></div><div class="todo-item"><div class="todo-ic"><i class="ti ti-file-description" aria-hidden="true"></i></div><div><div class="todo-t">Complete article resource</div><div class="todo-s">Session 10 · Mobile Hybrid Solution</div></div><div class="todo-tag">1h 30m</div></div><div class="todo-item"><div class="todo-ic"><i class="ti ti-link" aria-hidden="true"></i></div><div><div class="todo-t">Complete link resource</div><div class="todo-s">Session 10 · Artificial Intelligence</div></div><div class="todo-tag">1h 30m</div></div><div class="todo-item"><div class="todo-ic"><i class="ti ti-wifi" aria-hidden="true"></i></div><div><div class="todo-t">WiFi attendance check-in</div><div class="todo-s">Session 10 · Calculus</div></div><div class="todo-tag">2h 00m</div></div><div class="todo-item" style="cursor:pointer;"><div class="todo-ic" style="background:var(--color-background-danger);color:var(--color-text-danger);"><i class="ti ti-pencil" aria-hidden="true"></i></div><div><div class="todo-t">Submit Assignment 3</div><div class="todo-s">Session 9 · Computational Biology</div></div><div class="todo-tag late">Overdue</div></div></div>
             <div class="card"><div class="card-hd"><div class="card-title">Inbox</div><span class="card-more">See all →</span></div><div class="inbox-item"><div class="inbox-from">zia.kahfi@binus.edu</div><div class="inbox-subj">Seminar Don't Just Be Smart</div><div class="inbox-prev">Mahir Karir Bareng BINUS Career...</div><div class="inbox-time">Tue 16:20</div></div><div class="inbox-item"><div class="inbox-from">noreply@binusmaya.binus.edu</div><div class="inbox-subj">[REMINDER] Registrasi Mata Kuliah</div><div class="inbox-prev">Dear Sdr/Sdri, Dengan ini kami...</div><div class="inbox-time">Tue 15:07</div></div></div>
           </div>
           <div style="display:flex;flex-direction:column;gap:12px;">
@@ -538,8 +541,7 @@ function switchCdTab(el,tab){
 
 /* SESSION */
 function renderSessionTab(c){
-  const sessions=c.quizQuestions?[{num:1,done:true},{num:2,done:true},{num:3,done:true},{num:4,done:true},{num:5,done:true},{num:6,done:true},{num:7,done:true},{num:8,done:true},{num:9,done:true},{num:10,done:false,current:true}]:[];
-  const sData={calc:{title:'Derivatives Review',outcomes:['(C2) Explain the fundamental theorem of calculus and applications in real-world problems','(C4) Apply differentiation rules to solve optimization and related rate problems'],subtopics:['Product & Quotient Rules','Chain Rule Advanced','Implicit Differentiation','Related Rates','Optimization Problems'],things:[{icon:'ti-wifi',name:'WiFi Attendance',dur:'1h 40m'},{icon:'ti-video',name:'Video Conference',dur:'1h 40m'},{icon:'ti-file-text',name:'Lecture Notes',dur:'15m'},{icon:'ti-pencil',name:'Practice Set 10',dur:'30m'}]},ai:{title:'Neural Networks',outcomes:['(C3) Implement a basic feedforward neural network using Python','(C4) Analyze how backpropagation updates weights in a neural network'],subtopics:['Perceptron Model','Activation Functions','Forward Propagation','Backpropagation','Gradient Descent'],things:[{icon:'ti-wifi',name:'WiFi Attendance',dur:'1h 40m'},{icon:'ti-video',name:'Video Conference',dur:'1h 40m'},{icon:'ti-code',name:'Lab: Neural Net',dur:'45m'},{icon:'ti-file-text',name:'Reading Material',dur:'20m'}]},bio:{title:'Sequence Alignment',outcomes:['(C2) Explain basic concepts of Genomics, Proteomics, Bioinformatics, Sequence Alignment and Molecular Evolution','(C4) Identify real-world applications of Sequence Alignment and Molecular Evolution'],subtopics:['Heuristic Database Searching','Homology, Similarity, and Identity','Needleman-Wunsch Algorithm','Smith-Waterman Algorithm','BLAST Score & E-value'],things:[{icon:'ti-wifi',name:'WiFi Attendance',dur:'1h 40m'},{icon:'ti-video',name:'Video Conference',dur:'1h 40m'},{icon:'ti-file-text',name:'Sequence Alignment',dur:'10m'},{icon:'ti-link',name:'Needleman-Wunsch Algo',dur:'15m'}]}};
+  const sData={calc:{title:'Derivatives Review',outcomes:['(C2) Explain the fundamental theorem of calculus and applications in real-world problems','(C4) Apply differentiation rules to solve optimization and related rate problems'],subtopics:['Product & Quotient Rules','Chain Rule Advanced','Implicit Differentiation','Related Rates','Optimization Problems'],things:[{icon:'ti-wifi',name:'WiFi Attendance',dur:'1h 40m'},{icon:'ti-video',name:'Video Conference',dur:'1h 40m'},{icon:'ti-file-text',name:'Lecture Notes',dur:'15m'},{icon:'ti-pencil',name:'Practice Set 10',dur:'30m'}]},ai:{title:'Neural Networks',outcomes:['(C3) Implement a basic feedforward neural network using Python','(C4) Analyze how backpropagation updates weights in a neural network'],subtopics:['Perceptron Model','Activation Functions','Forward Propagation','Backpropagation','Gradient Descent'],things:[{icon:'ti-wifi',name:'WiFi Attendance',dur:'1h 40m'},{icon:'ti-video',name:'Session Video',dur:'1h 40m'},{icon:'ti-code',name:'Lab: Neural Net',dur:'45m'},{icon:'ti-file-text',name:'Reading Material',dur:'20m'}]},bio:{title:'Sequence Alignment',outcomes:['(C2) Explain basic concepts of Genomics, Proteomics, Bioinformatics, Sequence Alignment and Molecular Evolution','(C4) Identify real-world applications of Sequence Alignment and Molecular Evolution'],subtopics:['Heuristic Database Searching','Homology, Similarity, and Identity','Needleman-Wunsch Algorithm','Smith-Waterman Algorithm','BLAST Score & E-value'],things:[{icon:'ti-wifi',name:'WiFi Attendance',dur:'1h 40m'},{icon:'ti-video',name:'Video Conference',dur:'1h 40m'},{icon:'ti-file-text',name:'Sequence Alignment',dur:'10m'},{icon:'ti-link',name:'Needleman-Wunsch Algo',dur:'15m'}]}};
   const s=sData[activeCourse];
   document.getElementById('cd-body-wrap').innerHTML=`
     <div class="cd-body">
@@ -631,7 +633,8 @@ function submitForum(){
   document.getElementById('forum-text').value='';
   uploadedFiles=[];
   renderFilePreviews();
-  if(window.hDone)window.hDone();
+  // Task t4: post on forum in Calculus course
+  hCompleteTask('t4', activeCourse === 'calc');
 }
 function likePost(id){
   const el=document.getElementById('like-'+id);
@@ -670,13 +673,12 @@ function renderAssessment(c){
               </div>`).join('')}
             </div>`).join('')}
         </div>
-        <button class="quiz-submit" id="quiz-submit-btn" onclick="submitQuiz()">Submit Quiz</button>
+        <button class="quiz-submit" id="quiz-submit-btn" onclick="hAssignmentSubmit()">Submit Quiz</button>
       </div>
     </div>`;
 }
 function selectOpt(qi,oi){
   if(quizSubmitted)return;
-  const c=courses[activeCourse];
   document.querySelectorAll(`[id^="opt-${qi}-"]`).forEach(el=>el.classList.remove('selected'));
   document.getElementById(`opt-${qi}-${oi}`).classList.add('selected');
   document.getElementById(`r${qi}-${oi}`).checked=true;
@@ -700,7 +702,7 @@ function submitQuiz(){
   showToast('Done, will be checked');
   const notifList=document.getElementById('notif-list');
   notifList.insertAdjacentHTML('afterbegin',`<div class="notif-item"><div class="notif-title"><span class="notif-dot"></span>Quiz submitted</div><div class="notif-sub">${c.name} · Session ${c.session}</div><div class="notif-time">just now</div></div>`);
-  if(window.hDone)window.hDone();
+  // Not a harness task — no hCompleteTask call here
 }
 
 /* GRADEBOOK */
@@ -789,18 +791,44 @@ function filterPeople(q){
   });
 }
 
-// Task harness integration
-function hMaterialOpen(materialName){
-  if(window.hDone)window.hDone();
+// ─── TASK-SPECIFIC COMPLETION HANDLERS ───────────────────────────────────────
+//
+// hCompleteTask(taskId, conditionMet)
+//   - taskId: the harness task ID that this action satisfies (e.g. 't1')
+//   - conditionMet: boolean — extra guard for context-specific requirements
+//     (e.g. "must be in the AI course", "must be the right announcement")
+//
+// Only calls hDone() when BOTH the active harness task matches AND the
+// condition is true. Silently no-ops otherwise so unrelated actions never
+// accidentally complete a task.
+//
+function hCompleteTask(taskId, conditionMet) {
+  if (conditionMet === false) return;   // wrong context
+  if (typeof window._hCurrentTask === 'undefined') return; // harness not running
+  if (window._hCurrentTask !== taskId) return;             // wrong task active
+  if (typeof window.hDone === 'function') window.hDone();
 }
 
-function hAnnouncementRead(announcementTitle){
-  if(window.hDone)window.hDone();
+// Task t1 — "Read the announcement titled Midterm Exam Schedule Released"
+function hAnnouncementRead(announcementTitle) {
+  hCompleteTask('t1', announcementTitle === 'Midterm Exam Schedule Released');
 }
 
-function hAssignmentSubmit(){
-  if(window.hDone)window.hDone();
+// Task t2 — "Open Session Video in the Artificial Intelligence course, Session 10"
+function hMaterialOpen(materialName) {
+  // Must be in AI course AND open the Session Video resource
+  hCompleteTask('t2', activeCourse === 'ai' && materialName === 'Session Video');
 }
+
+// Task t3 — "Submit Assignment 3 for Computational Biology"
+// Triggered by clicking the Assignment 3 overdue item on the dashboard
+function hAssignmentSubmit() {
+  hCompleteTask('t3', activeCourse === 'bio'); // context is fixed (only one such button exists)
+}
+
+// Task t4 — "Post on the Calculus course forum"
+// Called inside submitForum() with the course guard already applied
+// (see submitForum above — hCompleteTask('t4', activeCourse === 'calc'))
 </script>
 <script>
 window.HARNESS_DESIGN="Design B";
@@ -851,25 +879,28 @@ window.HARNESS_SHEET="https://script.google.com/macros/s/AKfycbxiHyKRZJds7BXEcxG
   var DESIGN = window.HARNESS_DESIGN || 'Design ?';
   var SHEET  = window.HARNESS_SHEET  || '';
   var TASKS = [
-    {id:'t1',title:'Check an announcement',
-     desc:'Find and <strong>read the full text</strong> of the announcement titled \u201cMidterm Exam Schedule Released\u201d.',
+    {id:'t1',title:"Find and read the full text of the announcement titled 'Midterm Exam Schedule Released'.",
+     desc:'',
      hint:''},
-    {id:'t2',title:'Open a session material',
-     desc:'Go to the <strong>Artificial Intelligence</strong> course, find <strong>Session 10</strong>, and open the <strong>Session Video</strong> resource.',
+    {id:'t2',title:"Go to the Artificial Intelligence course, find Session 10, and open the Session Video resource.",
+     desc:'',
      hint:''},
-    {id:'t3',title:'Submit an assignment',
-     desc:'Submit <strong>Assignment 3</strong> for <strong>Computational Biology</strong>. Upload any file to complete it.',
+    {id:'t3',title:'Submit Assignment 3 for Computational Biology.',
+     desc:'',
      hint:''},
-    {id:'t4',title:'Post on the forum',
-     desc:'Go to the <strong>Calculus</strong> course forum and <strong>post any message</strong>.',
+    {id:'t4',title:'Go to the Calculus course forum and post any message.',
+     desc:'',
      hint:''}
   ];
   var pid='',cur=-1,t0=null,results=[],errors=0,ticker=null;
 
+  // Expose the current task ID so hCompleteTask() can read it
+  window._hCurrentTask = undefined;
+
   showWelcome();
 
   function showWelcome(){
-    cur=-1; stopTick();
+    cur=-1; stopTick(); window._hCurrentTask=undefined;
     setCard(
       '<div class="h-badge">'+DESIGN+'</div>'+
       '<div class="h-title">Usability Study</div>'+
@@ -887,7 +918,7 @@ window.HARNESS_SHEET="https://script.google.com/macros/s/AKfycbxiHyKRZJds7BXEcxG
     pid=v; showIntro(0);
   };
   function showIntro(i){
-    cur=-1; stopTick(); hideBar();
+    cur=-1; stopTick(); hideBar(); window._hCurrentTask=undefined;
     var t=TASKS[i];
     var dots=TASKS.map(function(_,j){return '<div class="h-step'+(j<i?' done':j===i?' active':'')+'"></div>';}).join('');
     setCard(
@@ -900,11 +931,20 @@ window.HARNESS_SHEET="https://script.google.com/macros/s/AKfycbxiHyKRZJds7BXEcxG
     );
     show();
   }
-  window.hStart=function(i){cur=i;errors=0;t0=Date.now();hide();showBar(i);startTick();};
+  window.hStart=function(i){
+    cur=i;
+    errors=0;
+    t0=Date.now();
+    window._hCurrentTask=TASKS[i].id;  // ← expose active task ID
+    hide();
+    showBar(i);
+    startTick();
+  };
   window.hDone=function(){
     if(cur<0)return;
     var elapsed=Date.now()-t0;
     stopTick();hideBar();
+    window._hCurrentTask=undefined;
     results.push({id:TASKS[cur].id,label:TASKS[cur].title,ms:elapsed,errors:errors});
     var next=cur+1;cur=-1;
     if(next<TASKS.length){showIntro(next);}
@@ -954,3 +994,4 @@ window.HARNESS_SHEET="https://script.google.com/macros/s/AKfycbxiHyKRZJds7BXEcxG
 })();
 </script>
 <!-- ======= END HARNESS ======= -->
+</html>
