@@ -1,36 +1,956 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Courses Dashboard</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-</head>
-<body>
 
-<div class="container">
-    <header>
-        <h1>My Courses</h1>
-        <div class="filter-section">
-            <label for="period">Running Period</label>
-            <select id="period">
-                <option>2024, Even Semester</option>
-                <option>2023, Odd Semester</option>
-            </select>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:var(--font-sans,system-ui);background:var(--color-background-tertiary);color:var(--color-text-primary);min-height:600px;}
+.app{display:flex;flex-direction:column;height:650px;}
+.topbar{display:flex;align-items:center;height:48px;background:var(--color-background-primary);border-bottom:0.5px solid var(--color-border-tertiary);flex-shrink:0;}
+.topbar-logo{display:flex;align-items:center;gap:8px;padding:0 16px;border-right:0.5px solid var(--color-border-tertiary);height:100%;min-width:180px;}
+.logo-mark{font-weight:500;font-size:15px;letter-spacing:-0.3px;}
+.logo-mark span{color:#e87722;}
+.topbar-section{font-size:11px;font-weight:500;color:var(--color-text-secondary);letter-spacing:.06em;text-transform:uppercase;padding-left:14px;flex:1;}
+.topbar-right{display:flex;align-items:center;gap:8px;padding:0 14px;position:relative;}
+.icon-btn{width:32px;height:32px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-tertiary);background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--color-text-secondary);font-size:15px;position:relative;}
+.icon-btn:hover{background:var(--color-background-secondary);}
+.badge-dot{position:absolute;top:4px;right:4px;width:7px;height:7px;border-radius:50%;background:#e24b4a;border:1.5px solid var(--color-background-primary);}
+.avatar-sm{width:30px;height:30px;border-radius:50%;background:#0d2b5e;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;color:#fff;cursor:pointer;flex-shrink:0;}
+.notif-panel{position:absolute;right:14px;top:42px;width:280px;background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);box-shadow:0 4px 20px rgba(0,0,0,.12);z-index:999;display:none;padding:4px 0;}
+.notif-panel.open{display:block;}
+.notif-hd{padding:10px 14px 6px;font-size:12px;font-weight:500;border-bottom:0.5px solid var(--color-border-tertiary);}
+.notif-item{padding:10px 14px;border-bottom:0.5px solid var(--color-border-tertiary);cursor:pointer;}
+.notif-item:last-child{border:none;}
+.notif-item:hover{background:var(--color-background-secondary);}
+.notif-title{font-size:12px;font-weight:500;}
+.notif-sub{font-size:11px;color:var(--color-text-secondary);margin-top:1px;}
+.notif-time{font-size:10px;color:var(--color-text-tertiary);margin-top:2px;}
+.notif-dot{width:6px;height:6px;border-radius:50%;background:#e87722;display:inline-block;margin-right:6px;}
+
+.body{display:flex;flex:1;overflow:hidden;}
+.sidebar{width:180px;flex-shrink:0;background:var(--color-background-primary);border-right:0.5px solid var(--color-border-tertiary);display:flex;flex-direction:column;overflow-y:auto;padding:12px 0;}
+.role-chip{margin:0 10px 10px;padding:10px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-tertiary);background:var(--color-background-secondary);}
+.role-lbl{font-size:10px;color:var(--color-text-tertiary);display:flex;justify-content:space-between;margin-bottom:3px;}
+.role-chg{font-size:9px;font-weight:500;color:#e87722;cursor:pointer;}
+.role-name{font-size:13px;font-weight:500;}
+.role-sub{font-size:11px;color:var(--color-text-secondary);}
+.nav-lbl{font-size:10px;color:var(--color-text-tertiary);padding:8px 12px 4px;letter-spacing:.06em;text-transform:uppercase;}
+.nav-link{display:flex;align-items:center;gap:8px;padding:7px 12px;cursor:pointer;font-size:12px;color:var(--color-text-secondary);transition:background .15s;position:relative;}
+.nav-link:hover{background:var(--color-background-secondary);color:var(--color-text-primary);}
+.nav-link.active{color:#e87722;font-weight:500;background:rgba(232,119,34,0.08);}
+.nav-link.active::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2.5px;background:#e87722;border-radius:0 2px 2px 0;}
+.nav-link i{font-size:14px;width:16px;text-align:center;}
+.nav-nbadge{margin-left:auto;font-size:9px;font-weight:500;background:var(--color-background-danger);color:var(--color-text-danger);padding:1px 5px;border-radius:9px;}
+
+.main{flex:1;overflow-y:auto;}
+.page{display:none;padding:20px;}
+.page.active{display:block;}
+
+/* HERO */
+.hero{border-radius:var(--border-radius-lg);background:linear-gradient(120deg,#0d2b5e 0%,#1a4080 60%,#8b2500 100%);padding:22px 24px;margin-bottom:18px;display:flex;align-items:center;justify-content:space-between;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;right:-40px;top:-40px;width:200px;height:200px;border-radius:50%;background:rgba(255,255,255,0.03);}
+.hero-greet{color:rgba(255,255,255,0.55);font-size:12px;}
+.hero-name{color:#fff;font-size:22px;font-weight:500;letter-spacing:-0.3px;margin-top:2px;}
+.hero-card{background:rgba(255,255,255,0.1);border:0.5px solid rgba(255,255,255,0.15);border-radius:var(--border-radius-md);padding:12px 16px;text-align:right;z-index:1;}
+.hero-card-lbl{font-size:10px;color:rgba(255,255,255,0.45);text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px;}
+.hero-class{font-size:12px;font-weight:500;color:#fff;}
+.hero-class-sub{font-size:11px;color:rgba(255,255,255,0.55);margin-top:1px;}
+.hero-time{font-size:11px;color:#e87722;margin-top:4px;font-weight:500;}
+.hero-open{margin-top:8px;background:#e87722;color:#fff;border:none;padding:6px 14px;border-radius:6px;font-size:11px;font-weight:500;cursor:pointer;}
+
+.quick-row{display:flex;gap:8px;margin-bottom:18px;overflow-x:auto;padding-bottom:2px;}
+.quick-row::-webkit-scrollbar{height:3px;}
+.qbtn{display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;flex-shrink:0;}
+.qbtn-icon{width:44px;height:44px;border-radius:var(--border-radius-md);background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);display:flex;align-items:center;justify-content:center;color:var(--color-text-secondary);font-size:18px;transition:all .2s;}
+.qbtn:hover .qbtn-icon{border-color:#e87722;color:#e87722;background:rgba(232,119,34,0.06);}
+.qbtn-lbl{font-size:10px;color:var(--color-text-secondary);white-space:nowrap;}
+
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:18px;}
+.g-auto{display:grid;grid-template-columns:1.15fr .85fr;gap:14px;}
+.card{background:var(--color-background-primary);border-radius:var(--border-radius-lg);border:0.5px solid var(--color-border-tertiary);padding:16px;}
+.card-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.card-title{font-size:13px;font-weight:500;}
+.card-more{font-size:11px;color:#e87722;cursor:pointer;}
+.sec-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.sec-title{font-size:14px;font-weight:500;}
+.tab-row{display:flex;gap:4px;margin-bottom:10px;}
+.tab-btn{padding:4px 10px;border-radius:5px;font-size:11px;font-weight:500;cursor:pointer;background:var(--color-background-secondary);color:var(--color-text-secondary);border:none;transition:all .15s;}
+.tab-btn.active{background:#e87722;color:#fff;}
+
+.course-card{background:var(--color-background-primary);border-radius:var(--border-radius-lg);border:0.5px solid var(--color-border-tertiary);overflow:hidden;cursor:pointer;transition:border-color .2s;}
+.course-card:hover{border-color:#e87722;}
+.cc-head{padding:16px;position:relative;}
+.cc-calc{background:#0d2b5e;}
+.cc-ai{background:#0e2e1a;}
+.cc-bio{background:#1e1040;}
+.cc-code{font-size:10px;color:rgba(255,255,255,0.4);font-family:var(--font-mono);margin-bottom:3px;}
+.cc-name{font-size:14px;font-weight:500;color:#fff;line-height:1.25;}
+.cc-tag{display:inline-flex;align-items:center;gap:4px;font-size:10px;color:rgba(255,255,255,0.55);background:rgba(255,255,255,0.1);padding:2px 7px;border-radius:4px;margin-top:7px;}
+.cc-icon-bg{position:absolute;right:12px;top:10px;font-size:26px;opacity:.18;color:#fff;}
+.cc-body{padding:12px 16px;}
+.cc-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
+.cc-pct{font-size:11px;color:var(--color-text-secondary);}
+.cc-num{font-size:11px;font-weight:500;color:#e87722;}
+.prog-bar{height:4px;background:var(--color-background-secondary);border-radius:2px;overflow:hidden;margin-bottom:10px;}
+.prog-fill{height:100%;border-radius:2px;background:#e87722;}
+.cc-meta{display:flex;gap:10px;}
+.cc-meta-item{font-size:11px;color:var(--color-text-secondary);display:flex;align-items:center;gap:4px;}
+.cc-meta-item i{font-size:12px;}
+.cc-session{font-size:11px;font-weight:500;color:#e87722;margin-top:8px;padding:4px 9px;border-radius:5px;background:rgba(232,119,34,0.08);display:inline-block;}
+
+.todo-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:0.5px solid var(--color-border-tertiary);}
+.todo-item:last-child{border:none;}
+.todo-ic{width:32px;height:32px;border-radius:var(--border-radius-md);background:rgba(232,119,34,0.08);display:flex;align-items:center;justify-content:center;color:#e87722;font-size:14px;flex-shrink:0;}
+.todo-t{font-size:12px;font-weight:500;}
+.todo-s{font-size:11px;color:var(--color-text-secondary);margin-top:1px;}
+.todo-tag{margin-left:auto;font-size:10px;font-weight:500;color:#e87722;background:rgba(232,119,34,0.08);padding:3px 7px;border-radius:4px;white-space:nowrap;flex-shrink:0;}
+.todo-tag.late{color:var(--color-text-danger);background:var(--color-background-danger);}
+
+.inbox-item{padding:9px 0;border-bottom:0.5px solid var(--color-border-tertiary);cursor:pointer;}
+.inbox-item:last-child{border:none;}
+.inbox-from{font-size:11px;color:var(--color-text-info);font-weight:500;margin-bottom:1px;}
+.inbox-subj{font-size:12px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.inbox-prev{font-size:11px;color:var(--color-text-tertiary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.inbox-time{font-size:10px;color:var(--color-text-tertiary);font-family:var(--font-mono);margin-top:1px;}
+
+.att-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;}
+.att-box{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:10px;}
+.att-status{font-size:11px;font-weight:500;margin-bottom:6px;display:flex;align-items:center;gap:5px;}
+.att-good{color:var(--color-text-success);}
+.att-warn{color:var(--color-text-danger);}
+.att-row{display:flex;justify-content:space-between;font-size:11px;color:var(--color-text-secondary);padding:3px 0;border-bottom:0.5px solid var(--color-border-tertiary);}
+.att-row:last-child{border:none;}
+.att-num{font-weight:500;color:var(--color-text-primary);}
+.exam-ok{margin-top:10px;background:var(--color-background-success);color:var(--color-text-success);border-radius:var(--border-radius-md);padding:7px 10px;font-size:11px;font-weight:500;display:flex;align-items:center;gap:6px;}
+.period-badge{display:inline-flex;background:var(--color-background-info);color:var(--color-text-info);font-size:10px;font-weight:500;padding:3px 8px;border-radius:4px;margin-top:4px;}
+.compass-icon-wrap{width:52px;height:52px;border-radius:50%;background:rgba(245,158,11,0.1);display:flex;align-items:center;justify-content:center;margin:8px auto;font-size:22px;color:#f59e0b;}
+.compass-state{font-size:15px;font-weight:500;color:#f59e0b;text-align:center;}
+.compass-desc{font-size:12px;color:var(--color-text-secondary);line-height:1.55;text-align:center;margin-top:6px;}
+.compass-cta{margin-top:12px;width:100%;padding:8px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-tertiary);background:transparent;cursor:pointer;font-size:12px;color:var(--color-text-secondary);}
+.compass-cta:hover{background:var(--color-background-secondary);}
+
+/* COURSE DETAIL */
+.cd-back{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--color-text-secondary);cursor:pointer;margin-bottom:14px;padding:4px 0;}
+.cd-back:hover{color:var(--color-text-primary);}
+.cd-header{background:var(--color-background-primary);border-radius:var(--border-radius-lg);border:0.5px solid var(--color-border-tertiary);padding:18px;margin-bottom:12px;}
+.cd-title{font-size:20px;font-weight:500;margin-bottom:6px;}
+.chip{display:inline-flex;align-items:center;gap:4px;font-size:11px;color:var(--color-text-secondary);background:var(--color-background-secondary);padding:3px 8px;border-radius:4px;border:0.5px solid var(--color-border-tertiary);}
+.cd-nav{display:flex;gap:2px;background:var(--color-background-primary);border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-tertiary);padding:4px;margin-bottom:12px;overflow-x:auto;}
+.cd-nav-btn{flex-shrink:0;padding:6px 12px;border-radius:6px;font-size:12px;cursor:pointer;border:none;background:transparent;color:var(--color-text-secondary);}
+.cd-nav-btn.active{background:#e87722;color:#fff;font-weight:500;}
+.cd-nav-btn:hover:not(.active){background:var(--color-background-secondary);}
+.cd-body{display:grid;grid-template-columns:1fr 230px;gap:12px;}
+.cd-content{background:var(--color-background-primary);border-radius:var(--border-radius-lg);border:0.5px solid var(--color-border-tertiary);padding:16px;}
+.cd-full{background:var(--color-background-primary);border-radius:var(--border-radius-lg);border:0.5px solid var(--color-border-tertiary);padding:16px;grid-column:span 2;}
+.cd-session-tabs{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:12px;}
+.sess-tab{padding:4px 10px;border-radius:5px;font-size:11px;cursor:pointer;border:0.5px solid var(--color-border-tertiary);background:transparent;color:var(--color-text-secondary);position:relative;}
+.sess-tab.active{background:#e87722;color:#fff;border-color:#e87722;}
+.sess-dot{position:absolute;top:2px;right:2px;width:5px;height:5px;border-radius:50%;background:#e87722;}
+.sess-tab.active .sess-dot{background:#fff;}
+.topic-title{font-size:15px;font-weight:500;margin-bottom:10px;}
+.topic-sub{font-size:12px;font-weight:500;color:var(--color-text-secondary);margin-bottom:6px;}
+.topic-list{list-style:none;padding:0;}
+.topic-list li{display:flex;align-items:flex-start;gap:8px;font-size:12px;color:var(--color-text-secondary);padding:4px 0;line-height:1.5;}
+.topic-list li::before{content:'';flex-shrink:0;width:6px;height:6px;border-radius:50%;background:#e87722;margin-top:5px;}
+.outcome-box{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:10px;margin-bottom:8px;}
+.outcome-tag{display:inline-flex;background:rgba(232,119,34,0.1);color:#e87722;font-size:10px;font-weight:500;padding:2px 7px;border-radius:4px;margin-bottom:4px;}
+.outcome-text{font-size:12px;color:var(--color-text-secondary);line-height:1.55;}
+.things-card{background:#e87722;border-radius:var(--border-radius-lg);padding:14px;margin-bottom:10px;}
+.things-title{font-size:12px;font-weight:500;color:#fff;margin-bottom:10px;}
+.thing-item{display:flex;align-items:center;gap:10px;padding:8px;background:rgba(255,255,255,0.12);border-radius:var(--border-radius-md);margin-bottom:6px;cursor:pointer;}
+.thing-item:last-child{margin:0;}
+.thing-ic{width:28px;height:28px;border-radius:6px;background:rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;font-size:14px;color:#fff;flex-shrink:0;}
+.thing-name{font-size:12px;font-weight:500;color:#fff;}
+.thing-dur{font-size:10px;color:rgba(255,255,255,0.65);}
+.thing-actions{display:flex;gap:4px;margin-left:auto;}
+.thing-ic-btn{width:22px;height:22px;border-radius:4px;background:rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;cursor:pointer;border:none;}
+.info-stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;}
+.stat-box{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:10px;}
+.stat-lbl{font-size:10px;color:var(--color-text-tertiary);margin-bottom:3px;}
+.stat-val{font-size:15px;font-weight:500;}
+.stat-val.good{color:var(--color-text-success);}
+.stat-val.warn{color:var(--color-text-danger);}
+.mini-att{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:12px;}
+.mini-att-title{font-size:12px;font-weight:500;margin-bottom:8px;}
+.mini-att-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:0.5px solid var(--color-border-tertiary);font-size:12px;}
+.mini-att-row:last-child{border:none;}
+.fac-avatar{width:36px;height:36px;border-radius:50%;background:var(--color-background-secondary);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;color:var(--color-text-secondary);border:0.5px solid var(--color-border-tertiary);flex-shrink:0;}
+
+/* FORUM */
+.forum-post{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:14px;margin-bottom:10px;}
+.forum-post-hd{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.forum-avatar{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500;color:#fff;flex-shrink:0;}
+.forum-author{font-size:12px;font-weight:500;}
+.forum-time{font-size:11px;color:var(--color-text-tertiary);}
+.forum-body{font-size:12px;color:var(--color-text-secondary);line-height:1.6;margin-bottom:10px;}
+.forum-img{width:100%;max-width:280px;height:120px;background:var(--color-background-secondary);border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-tertiary);display:flex;align-items:center;justify-content:center;color:var(--color-text-tertiary);font-size:12px;margin-bottom:10px;overflow:hidden;}
+.forum-img img{width:100%;height:100%;object-fit:cover;border-radius:var(--border-radius-md);}
+.forum-actions{display:flex;gap:8px;}
+.forum-action-btn{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--color-text-secondary);cursor:pointer;padding:4px 8px;border-radius:5px;border:0.5px solid var(--color-border-tertiary);background:transparent;}
+.forum-action-btn:hover{background:var(--color-background-secondary);}
+.forum-reply{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:10px;margin-top:8px;border-left:2px solid #e87722;}
+.forum-reply-text{font-size:12px;color:var(--color-text-secondary);line-height:1.5;}
+.forum-reply-auth{font-size:11px;font-weight:500;margin-bottom:3px;}
+
+.forum-compose{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:14px;margin-bottom:14px;}
+.forum-compose-title{font-size:13px;font-weight:500;margin-bottom:10px;}
+.compose-input{width:100%;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:8px 10px;font-size:12px;background:var(--color-background-secondary);color:var(--color-text-primary);resize:none;font-family:inherit;}
+.compose-input:focus{outline:none;border-color:#e87722;}
+.compose-toolbar{display:flex;align-items:center;gap:8px;margin-top:8px;}
+.compose-tb-btn{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--color-text-secondary);cursor:pointer;padding:5px 9px;border-radius:5px;border:0.5px solid var(--color-border-tertiary);background:transparent;}
+.compose-tb-btn:hover{background:var(--color-background-secondary);}
+.compose-submit{margin-left:auto;background:#e87722;color:#fff;border:none;padding:6px 14px;border-radius:6px;font-size:12px;font-weight:500;cursor:pointer;}
+.compose-submit:hover{opacity:.85;}
+.file-preview{display:flex;align-items:center;gap:8px;background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:7px 10px;margin-top:6px;font-size:11px;}
+.file-preview-name{color:var(--color-text-secondary);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.file-remove{color:var(--color-text-danger);cursor:pointer;font-size:14px;}
+
+/* GRADEBOOK */
+.grade-table{width:100%;border-collapse:collapse;font-size:12px;}
+.grade-table th{text-align:left;padding:8px 10px;background:var(--color-background-secondary);font-size:11px;font-weight:500;color:var(--color-text-secondary);border-bottom:0.5px solid var(--color-border-tertiary);}
+.grade-table td{padding:10px;border-bottom:0.5px solid var(--color-border-tertiary);}
+.grade-table tr:last-child td{border:none;}
+.grade-badge{display:inline-flex;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:500;}
+.grade-a{background:var(--color-background-success);color:var(--color-text-success);}
+.grade-b{background:var(--color-background-info);color:var(--color-text-info);}
+.grade-c{background:var(--color-background-warning);color:var(--color-text-warning);}
+.grade-pending{background:var(--color-background-secondary);color:var(--color-text-tertiary);}
+.grade-summary{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px;}
+.grade-stat{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:12px;text-align:center;}
+.grade-stat-val{font-size:20px;font-weight:500;margin-bottom:2px;}
+.grade-stat-lbl{font-size:11px;color:var(--color-text-secondary);}
+
+/* ATTENDANCE TAB */
+.att-table{width:100%;border-collapse:collapse;font-size:12px;}
+.att-table th{text-align:left;padding:8px 10px;background:var(--color-background-secondary);font-size:11px;font-weight:500;color:var(--color-text-secondary);border-bottom:0.5px solid var(--color-border-tertiary);}
+.att-table td{padding:10px;border-bottom:0.5px solid var(--color-border-tertiary);}
+.att-table tr:last-child td{border:none;}
+.att-pill{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:500;}
+.att-p{background:var(--color-background-success);color:var(--color-text-success);}
+.att-a{background:var(--color-background-danger);color:var(--color-text-danger);}
+.att-pe{background:var(--color-background-warning);color:var(--color-text-warning);}
+.att-l{background:var(--color-background-info);color:var(--color-text-info);}
+.att-summary-row{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;}
+.att-sum-box{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:10px 14px;display:flex;align-items:center;gap:10px;}
+.att-sum-num{font-size:20px;font-weight:500;}
+.att-sum-lbl{font-size:11px;color:var(--color-text-secondary);}
+
+/* PEOPLE */
+.people-search{display:flex;align-items:center;gap:8px;margin-bottom:14px;}
+.people-search input{flex:1;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:7px 10px;font-size:12px;background:var(--color-background-secondary);color:var(--color-text-primary);font-family:inherit;}
+.people-search input:focus{outline:none;border-color:#e87722;}
+.people-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+.people-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:14px;text-align:center;cursor:pointer;transition:border-color .2s;}
+.people-card:hover{border-color:#e87722;}
+.people-av{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:500;color:#fff;margin:0 auto 8px;}
+.people-name{font-size:12px;font-weight:500;margin-bottom:2px;}
+.people-nim{font-size:11px;color:var(--color-text-tertiary);font-family:var(--font-mono);}
+.people-role-badge{display:inline-flex;font-size:10px;padding:2px 7px;border-radius:4px;margin-top:5px;}
+.people-highlight{border:1.5px solid #e87722;background:rgba(232,119,34,0.04);}
+
+/* ASSESSMENT */
+.assess-doc{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:14px;margin-bottom:10px;display:flex;align-items:center;gap:12px;cursor:pointer;}
+.assess-doc:hover{border-color:#e87722;}
+.assess-doc-icon{width:38px;height:38px;border-radius:var(--border-radius-md);background:rgba(232,119,34,0.08);display:flex;align-items:center;justify-content:center;color:#e87722;font-size:18px;flex-shrink:0;}
+.assess-doc-name{font-size:13px;font-weight:500;}
+.assess-doc-meta{font-size:11px;color:var(--color-text-secondary);margin-top:2px;}
+.assess-doc-dl{margin-left:auto;display:flex;align-items:center;gap:5px;font-size:11px;color:var(--color-text-secondary);padding:5px 9px;border-radius:5px;border:0.5px solid var(--color-border-tertiary);cursor:pointer;}
+.assess-doc-dl:hover{background:var(--color-background-secondary);}
+
+.quiz-section{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:16px;}
+.quiz-title{font-size:14px;font-weight:500;margin-bottom:4px;}
+.quiz-meta{font-size:11px;color:var(--color-text-secondary);margin-bottom:14px;display:flex;gap:12px;}
+.quiz-q{margin-bottom:16px;}
+.quiz-q-text{font-size:13px;font-weight:500;margin-bottom:8px;line-height:1.5;}
+.quiz-opt{display:flex;align-items:center;gap:8px;padding:7px 10px;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);margin-bottom:5px;cursor:pointer;font-size:12px;transition:all .15s;}
+.quiz-opt:hover{border-color:#e87722;background:rgba(232,119,34,0.04);}
+.quiz-opt.selected{border-color:#e87722;background:rgba(232,119,34,0.08);color:#e87722;font-weight:500;}
+.quiz-opt.correct{border-color:var(--color-border-success);background:var(--color-background-success);color:var(--color-text-success);}
+.quiz-opt.wrong{border-color:var(--color-border-danger);background:var(--color-background-danger);color:var(--color-text-danger);}
+.quiz-opt input[type=radio]{accent-color:#e87722;}
+.quiz-submit{background:#e87722;color:#fff;border:none;padding:9px 20px;border-radius:var(--border-radius-md);font-size:12px;font-weight:500;cursor:pointer;margin-top:4px;}
+.quiz-submit:hover{opacity:.85;}
+.quiz-submit:disabled{opacity:.5;cursor:default;}
+
+/* TOAST */
+.toast{position:fixed;bottom:20px;right:20px;background:#1a1d2e;color:#fff;padding:12px 18px;border-radius:var(--border-radius-md);font-size:13px;font-weight:500;z-index:9999;display:none;align-items:center;gap:8px;box-shadow:0 4px 20px rgba(0,0,0,.2);}
+.toast.show{display:flex;}
+.toast i{color:#22c55e;font-size:16px;}
+</style>
+
+<div class="app">
+  <div class="topbar">
+    <div class="topbar-logo"><span class="logo-mark">BINUS<span>MAYA</span></span></div>
+    <div class="topbar-section" id="topbar-section">My Dashboard</div>
+    <div class="topbar-right">
+      <button class="icon-btn" onclick="toggleNotif()" aria-label="Notifications"><i class="ti ti-bell" aria-hidden="true"></i><span class="badge-dot" id="notif-dot"></span></button>
+      <div class="avatar-sm">JD</div>
+      <div class="notif-panel" id="notif-panel">
+        <div class="notif-hd">Notifications</div>
+        <div id="notif-list">
+          <div class="notif-item"><div class="notif-title"><span class="notif-dot"></span>Assignment due soon</div><div class="notif-sub">Computational Biology · Session 9</div><div class="notif-time">2 min ago</div></div>
+          <div class="notif-item"><div class="notif-title"><span class="notif-dot"></span>New forum reply</div><div class="notif-sub">Artificial Intelligence · Session 10</div><div class="notif-time">15 min ago</div></div>
+          <div class="notif-item"><div class="notif-title">Quiz available</div><div class="notif-sub">Calculus · Session 10 Quiz</div><div class="notif-time">1 hr ago</div></div>
         </div>
-    </header>
+      </div>
+    </div>
+  </div>
 
-    <nav class="tabs">
-        <button class="tab-btn" onclick="filterTabs('CL')">CL</button>
-        <button class="tab-btn" onclick="filterTabs('LAB')">LAB</button>
-        <button class="tab-btn active" onclick="filterTabs('LEC')">LEC</button>
+  <div class="body">
+    <nav class="sidebar">
+      <div class="role-chip">
+        <div class="role-lbl">Role <span class="role-chg">CHANGE</span></div>
+        <div class="role-name">Student</div>
+        <div class="role-sub">Undergraduate · BINUS</div>
+      </div>
+      <div class="nav-link active" onclick="showPage('dashboard',this,'My Dashboard')"><i class="ti ti-layout-dashboard" aria-hidden="true"></i> Dashboard</div>
+      <div class="nav-link" onclick="showPage('courses',this,'Courses')"><i class="ti ti-books" aria-hidden="true"></i> Courses</div>
+      <div class="nav-link" onclick="setNav(this)"><i class="ti ti-messages" aria-hidden="true"></i> Forum <span class="nav-nbadge">5</span></div>
+      <div class="nav-link" onclick="setNav(this)"><i class="ti ti-clipboard-check" aria-hidden="true"></i> Assessment</div>
+      <div class="nav-link" onclick="setNav(this)"><i class="ti ti-chart-bar" aria-hidden="true"></i> Gradebook</div>
+      <div class="nav-link" onclick="setNav(this)"><i class="ti ti-calendar-check" aria-hidden="true"></i> Attendance</div>
+      <div class="nav-link" onclick="setNav(this)"><i class="ti ti-calendar" aria-hidden="true"></i> Schedule</div>
+      <div class="nav-lbl" style="margin-top:6px;">Tools</div>
+      <div class="nav-link" onclick="setNav(this)"><i class="ti ti-book" aria-hidden="true"></i> Library</div>
+      <div class="nav-link" onclick="setNav(this)"><i class="ti ti-world" aria-hidden="true"></i> Enrichment</div>
+      <div class="nav-link" onclick="setNav(this)"><i class="ti ti-certificate" aria-hidden="true"></i> Thesis</div>
+      <div class="nav-link" onclick="setNav(this);showAnnouncements()"><i class="ti ti-speakerphone" aria-hidden="true"></i> Announcement <span class="nav-nbadge">3</span></div>
     </nav>
 
-    <main class="course-grid" id="courseGrid">
-        </main>
+    <main class="main">
+      <!-- DASHBOARD -->
+      <div class="page active" id="page-dashboard">
+        <div class="hero">
+          <div>
+            <div class="hero-greet">Good Afternoon,</div>
+            <div class="hero-name">Jane Doe</div>
+          </div>
+          <div class="hero-card">
+            <div class="hero-card-lbl">Upcoming Onsite Class</div>
+            <div class="hero-class">LD01 - LEC · Mobile Hybrid Solution</div>
+            <div class="hero-class-sub">Room A1901 · Alam Sutera Main Campus</div>
+            <div class="hero-time"><i class="ti ti-clock" style="font-size:11px;" aria-hidden="true"></i> 21 May 2026, 15:20 GMT+7</div>
+            <button class="hero-open">Open →</button>
+          </div>
+        </div>
+        <div class="quick-row">
+          <div class="qbtn"><div class="qbtn-icon"><i class="ti ti-books" aria-hidden="true"></i></div><div class="qbtn-lbl">LMS</div></div>
+          <div class="qbtn"><div class="qbtn-icon"><i class="ti ti-id-badge" aria-hidden="true"></i></div><div class="qbtn-lbl">Academic</div></div>
+          <div class="qbtn"><div class="qbtn-icon"><i class="ti ti-language" aria-hidden="true"></i></div><div class="qbtn-lbl">Beelingua</div></div>
+          <div class="qbtn"><div class="qbtn-icon"><i class="ti ti-book" aria-hidden="true"></i></div><div class="qbtn-lbl">Library</div></div>
+          <div class="qbtn"><div class="qbtn-icon"><i class="ti ti-bolt" aria-hidden="true"></i></div><div class="qbtn-lbl">Activities</div></div>
+          <div class="qbtn"><div class="qbtn-icon"><i class="ti ti-help-circle" aria-hidden="true"></i></div><div class="qbtn-lbl">Support</div></div>
+          <div class="qbtn"><div class="qbtn-icon"><i class="ti ti-brain" aria-hidden="true"></i></div><div class="qbtn-lbl">Enrichment</div></div>
+          <div class="qbtn"><div class="qbtn-icon"><i class="ti ti-school" aria-hidden="true"></i></div><div class="qbtn-lbl">Freshmen</div></div>
+        </div>
+        <div class="sec-hd"><div class="sec-title">My Courses</div><span class="card-more" onclick="showPage('courses',document.querySelectorAll('.nav-link')[1],'Courses')">View all →</span></div>
+        <div class="g3">
+          <div class="course-card" onclick="showCourse('calc')"><div class="cc-head cc-calc"><div class="cc-icon-bg"><i class="ti ti-math-integral" aria-hidden="true"></i></div><div class="cc-code">MATH2032001</div><div class="cc-name">Calculus</div><div class="cc-tag"><i class="ti ti-microphone" style="font-size:10px;" aria-hidden="true"></i> Lecture</div></div><div class="cc-body"><div class="cc-row"><span class="cc-pct">Progress</span><span class="cc-num">42%</span></div><div class="prog-bar"><div class="prog-fill" style="width:42%"></div></div><div class="cc-meta"><div class="cc-meta-item"><i class="ti ti-calendar" aria-hidden="true"></i> Sess 10/26</div><div class="cc-meta-item"><i class="ti ti-user" aria-hidden="true"></i> Dr. Hendro</div></div><div class="cc-session">Next: Derivatives →</div></div></div>
+          <div class="course-card" onclick="showCourse('ai')"><div class="cc-head cc-ai"><div class="cc-icon-bg"><i class="ti ti-cpu" aria-hidden="true"></i></div><div class="cc-code">COMP6048001</div><div class="cc-name">Artificial Intelligence</div><div class="cc-tag"><i class="ti ti-microphone" style="font-size:10px;" aria-hidden="true"></i> Lecture</div></div><div class="cc-body"><div class="cc-row"><span class="cc-pct">Progress</span><span class="cc-num" style="color:#22c55e;">63%</span></div><div class="prog-bar"><div class="prog-fill" style="width:63%;background:#22c55e;"></div></div><div class="cc-meta"><div class="cc-meta-item"><i class="ti ti-calendar" aria-hidden="true"></i> Sess 10/16</div><div class="cc-meta-item"><i class="ti ti-user" aria-hidden="true"></i> Dr. Anderies</div></div><div class="cc-session" style="background:rgba(34,197,94,.1);color:#22c55e;">Next: Neural Nets →</div></div></div>
+          <div class="course-card" onclick="showCourse('bio')"><div class="cc-head cc-bio"><div class="cc-icon-bg"><i class="ti ti-dna" aria-hidden="true"></i></div><div class="cc-code">SCIE6062001</div><div class="cc-name">Computational Biology</div><div class="cc-tag"><i class="ti ti-microphone" style="font-size:10px;" aria-hidden="true"></i> Lecture</div></div><div class="cc-body"><div class="cc-row"><span class="cc-pct">Progress</span><span class="cc-num" style="color:#a855f7;">28%</span></div><div class="prog-bar"><div class="prog-fill" style="width:28%;background:#a855f7;"></div></div><div class="cc-meta"><div class="cc-meta-item"><i class="ti ti-calendar" aria-hidden="true"></i> Sess 10/26</div><div class="cc-meta-item"><i class="ti ti-user" aria-hidden="true"></i> Dr. Rina</div></div><div class="cc-session" style="background:rgba(168,85,247,.1);color:#a855f7;">Next: Seq Alignment →</div></div></div>
+        </div>
+        <div class="g-auto">
+          <div style="display:flex;flex-direction:column;gap:12px;">
+            <div class="card"><div class="card-hd"><div class="card-title">Learning to-do list <span style="font-size:11px;color:var(--color-text-danger);font-weight:500;margin-left:4px;">32 tasks</span></div><span class="card-more">See all →</span></div><div class="tab-row"><button class="tab-btn active" onclick="switchTab(this)">All</button><button class="tab-btn" onclick="switchTab(this)">Assessment</button><button class="tab-btn" onclick="switchTab(this)">WiFi</button><button class="tab-btn" onclick="switchTab(this)">Forum</button></div><div class="todo-item"><div class="todo-ic"><i class="ti ti-file-description" aria-hidden="true"></i></div><div><div class="todo-t">Complete article resource</div><div class="todo-s">Session 10 · Mobile Hybrid Solution</div></div><div class="todo-tag">1h 30m</div></div><div class="todo-item"><div class="todo-ic"><i class="ti ti-link" aria-hidden="true"></i></div><div><div class="todo-t">Complete link resource</div><div class="todo-s">Session 10 · Artificial Intelligence</div></div><div class="todo-tag">1h 30m</div></div><div class="todo-item"><div class="todo-ic"><i class="ti ti-wifi" aria-hidden="true"></i></div><div><div class="todo-t">WiFi attendance check-in</div><div class="todo-s">Session 10 · Calculus</div></div><div class="todo-tag">2h 00m</div></div><div class="todo-item" onclick="hAssignmentSubmit()" style="cursor:pointer;"><div class="todo-ic" style="background:var(--color-background-danger);color:var(--color-text-danger);"><i class="ti ti-pencil" aria-hidden="true"></i></div><div><div class="todo-t">Submit Assignment 3</div><div class="todo-s">Session 9 · Computational Biology</div></div><div class="todo-tag late">Overdue</div></div></div>
+            <div class="card"><div class="card-hd"><div class="card-title">Inbox</div><span class="card-more">See all →</span></div><div class="inbox-item"><div class="inbox-from">zia.kahfi@binus.edu</div><div class="inbox-subj">Seminar Don't Just Be Smart</div><div class="inbox-prev">Mahir Karir Bareng BINUS Career...</div><div class="inbox-time">Tue 16:20</div></div><div class="inbox-item"><div class="inbox-from">noreply@binusmaya.binus.edu</div><div class="inbox-subj">[REMINDER] Registrasi Mata Kuliah</div><div class="inbox-prev">Dear Sdr/Sdri, Dengan ini kami...</div><div class="inbox-time">Tue 15:07</div></div></div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:12px;">
+            <div class="card"><div class="card-title" style="margin-bottom:10px;">Student compass</div><div class="compass-icon-wrap"><i class="ti ti-compass" style="font-size:22px;" aria-hidden="true"></i></div><div class="compass-state">Off Track</div><div class="compass-desc">You're not on target this semester. View suggestions to get back on track.</div><button class="compass-cta" style="margin-top:10px;">View suggestions →</button></div>
+            <div class="card"><div class="card-title" style="margin-bottom:4px;">Attendance summary</div><div class="period-badge">2025, Even Semester</div><div class="att-grid"><div class="att-box"><div class="att-status att-good"><i class="ti ti-circle-check" style="font-size:12px;" aria-hidden="true"></i> Good</div><div class="att-row"><span>LEC</span><span class="att-num">6</span></div><div class="att-row"><span>LAB</span><span class="att-num">2</span></div><div class="att-row"><span>TUT</span><span class="att-num">1</span></div></div><div class="att-box"><div class="att-status att-warn"><i class="ti ti-alert-triangle" style="font-size:12px;" aria-hidden="true"></i> Attention</div><div class="att-row"><span>LAB</span><span class="att-num">2</span></div></div></div><div class="exam-ok"><i class="ti ti-circle-check" style="font-size:14px;" aria-hidden="true"></i> Exam eligibility: Good</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- COURSES LIST -->
+      <div class="page" id="page-courses">
+        <div class="sec-hd"><div class="sec-title">All Courses — 2025, Even Semester</div></div>
+        <div class="g3">
+          <div class="course-card" onclick="showCourse('calc')"><div class="cc-head cc-calc"><div class="cc-icon-bg"><i class="ti ti-math-integral" aria-hidden="true"></i></div><div class="cc-code">MATH2032001 · Credit 3/1</div><div class="cc-name">Calculus</div><div class="cc-tag"><i class="ti ti-microphone" style="font-size:10px;" aria-hidden="true"></i> LR01 - LEC</div></div><div class="cc-body"><div class="cc-row"><span class="cc-pct">Your progress</span><span class="cc-num">42%</span></div><div class="prog-bar"><div class="prog-fill" style="width:42%"></div></div><div class="cc-meta"><div class="cc-meta-item"><i class="ti ti-users" aria-hidden="true"></i> 3 facilitators</div><div class="cc-meta-item"><i class="ti ti-calendar" aria-hidden="true"></i> Sess 10</div></div></div></div>
+          <div class="course-card" onclick="showCourse('ai')"><div class="cc-head cc-ai"><div class="cc-icon-bg"><i class="ti ti-cpu" aria-hidden="true"></i></div><div class="cc-code">COMP6048001 · Credit 3/1</div><div class="cc-name">Artificial Intelligence</div><div class="cc-tag"><i class="ti ti-microphone" style="font-size:10px;" aria-hidden="true"></i> LD01 - LEC</div></div><div class="cc-body"><div class="cc-row"><span class="cc-pct">Your progress</span><span class="cc-num" style="color:#22c55e;">63%</span></div><div class="prog-bar"><div class="prog-fill" style="width:63%;background:#22c55e;"></div></div><div class="cc-meta"><div class="cc-meta-item"><i class="ti ti-users" aria-hidden="true"></i> 2 facilitators</div><div class="cc-meta-item"><i class="ti ti-calendar" aria-hidden="true"></i> Sess 10</div></div></div></div>
+          <div class="course-card" onclick="showCourse('bio')"><div class="cc-head cc-bio"><div class="cc-icon-bg"><i class="ti ti-dna" aria-hidden="true"></i></div><div class="cc-code">SCIE6062001 · Credit 2/1</div><div class="cc-name">Computational Biology</div><div class="cc-tag"><i class="ti ti-microphone" style="font-size:10px;" aria-hidden="true"></i> LR01 - LEC</div></div><div class="cc-body"><div class="cc-row"><span class="cc-pct">Your progress</span><span class="cc-num" style="color:#a855f7;">28%</span></div><div class="prog-bar"><div class="prog-fill" style="width:28%;background:#a855f7;"></div></div><div class="cc-meta"><div class="cc-meta-item"><i class="ti ti-users" aria-hidden="true"></i> 3 facilitators</div><div class="cc-meta-item"><i class="ti ti-calendar" aria-hidden="true"></i> Sess 10</div></div></div></div>
+        </div>
+      </div>
+
+      <!-- COURSE DETAIL -->
+      <div class="page" id="page-course-detail">
+        <div class="cd-back" onclick="goBack()"><i class="ti ti-arrow-left" aria-hidden="true"></i> Back</div>
+        <div class="cd-header" id="cd-header-content"></div>
+        <div class="cd-nav" id="cd-nav"></div>
+        <div id="cd-body-wrap"></div>
+      </div>
+
+      <!-- ANNOUNCEMENTS -->
+      <div class="page" id="page-announcements">
+        <div class="sec-hd"><div class="sec-title">Announcements</div></div>
+        <div style="display:flex;flex-direction:column;gap:12px;">
+          <div class="forum-post" onclick="hAnnouncementRead('Midterm Exam Schedule Released')" style="cursor:pointer;border:1.5px solid #e87722;background:rgba(232,119,34,.04);">
+            <div class="forum-post-hd">
+              <div class="forum-avatar" style="background:#0d2b5e;">AD</div>
+              <div><div class="forum-author">Admin · BINUS</div><div class="forum-time">Today 09:15</div></div>
+            </div>
+            <div class="forum-body"><strong>Midterm Exam Schedule Released</strong><br><br>The midterm exam schedule for all courses in the Even Semester 2025 has been released. Please check your course dashboard for the exact date and time of your exam. The exam will be conducted both online and offline depending on your course type. Make sure to review all the course materials before the exam date.</div>
+            <div style="font-size:11px;color:#e87722;margin-top:8px;">Click to read full announcement ✓</div>
+          </div>
+          <div class="forum-post">
+            <div class="forum-post-hd">
+              <div class="forum-avatar" style="background:#0e2e1a;">AD</div>
+              <div><div class="forum-author">Admin · BINUS</div><div class="forum-time">5 days ago</div></div>
+            </div>
+            <div class="forum-body"><strong>System Maintenance Scheduled</strong><br><br>The BinusMaya system will undergo maintenance on Saturday, May 31st from 2:00 AM to 6:00 AM GMT+7. During this time, the platform will be unavailable.</div>
+          </div>
+          <div class="forum-post">
+            <div class="forum-post-hd">
+              <div class="forum-avatar" style="background:#1e1040;">AD</div>
+              <div><div class="forum-author">Admin · BINUS</div><div class="forum-time">1 week ago</div></div>
+            </div>
+            <div class="forum-body"><strong>New Learning Resources Available</strong><br><br>We've added new learning resources to the library. These resources include video tutorials and reference materials for all courses. Visit the library section to access them.</div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
 </div>
 
-<script src="script.js"></script>
-</body>
-</html>[-]
+<div class="toast" id="toast"><i class="ti ti-circle-check" aria-hidden="true"></i><span id="toast-msg">Done, will be checked</span></div>
+
+<script>
+const courses={
+  calc:{name:'Calculus',code:'MATH2032001',credit:'3/1',cls:'LR01 - LEC',bgClass:'cc-calc',icon:'ti-math-integral',progress:42,session:10,total:26,color:'#0d2b5e',
+    facilitators:[{init:'HD',color:'#0d2b5e',name:'Dr. Hendro Djoko',role:'Lead Lecturer'},{init:'SP',color:'#6d28d9',name:'Dr. Sri Purwanti',role:'Lecturer'},{init:'AB',color:'#0f766e',name:'Ahmad Budiman, S.T.',role:'Teaching Assistant'}],
+    attendance:{present:8,absent:1,permit:1,late:0,sessions:[{n:1,s:'P'},{n:2,s:'P'},{n:3,s:'P'},{n:4,s:'P'},{n:5,s:'P'},{n:6,s:'A'},{n:7,s:'P'},{n:8,s:'P'},{n:9,s:'Pe'},{n:10,s:'-'}]},
+    grades:[{type:'Quiz 1',score:85,max:100,grade:'B'},{type:'Quiz 2',score:92,max:100,grade:'A'},{type:'Assignment 1',score:88,max:100,grade:'B'},{type:'Assignment 2',score:95,max:100,grade:'A'},{type:'Midterm',score:80,max:100,grade:'B'},{type:'Quiz 3',score:null,max:100,grade:'-'}],
+    people:[{init:'HD',color:'#0d2b5e',name:'Dr. Hendro Djoko',nim:'L0001',role:'Lecturer'},{init:'SP',color:'#6d28d9',name:'Dr. Sri Purwanti',nim:'L0002',role:'Lecturer'},{init:'AB',color:'#0f766e',name:'Ahmad Budiman',nim:'L0003',role:'TA'},{init:'OM',color:'#e87722',name:'Jane Doe',nim:'2602123456',role:'Student'},{init:'RK',color:'#0d9488',name:'Rania Kusuma',nim:'2602234567',role:'Student'},{init:'FA',color:'#7c3aed',name:'Farhan Adi',nim:'2602345678',role:'Student'},{init:'NP',color:'#b45309',name:'Nadia Putri',nim:'2602456789',role:'Student'},{init:'DS',color:'#dc2626',name:'Dimas Satria',nim:'2602567890',role:'Student'},{init:'LW',color:'#0369a1',name:'Laras Wulandari',nim:'2602678901',role:'Student'}],
+    forumPosts:[{id:1,auth:'Dr. Hendro Djoko',init:'HD',color:'#0d2b5e',time:'Mon 09:00',body:'Selamat datang di forum Calculus Session 10! Silakan diskusikan materi Derivatives Review. Jangan ragu untuk bertanya.',replies:[{auth:'Rania Kusuma',init:'RK',color:'#0d9488',time:'Mon 10:15',text:'Pak, boleh minta penjelasan lebih lanjut tentang chain rule pada fungsi komposit trigonometri?'}]},{id:2,auth:'Farhan Adi',init:'FA',color:'#7c3aed',time:'Mon 14:20',body:'Ada yang bisa jelasin perbedaan explicit vs implicit differentiation? Masih bingung kapan pakai yang mana.',img:null,replies:[{auth:'Dr. Hendro Djoko',init:'HD',color:'#0d2b5e',time:'Mon 15:00',text:'Explicit differentiation digunakan saat y bisa dinyatakan langsung sebagai fungsi x. Implicit digunakan saat hubungan x dan y tidak bisa dipisahkan dengan mudah.'}]}],
+    quizQuestions:[{q:'Berapa turunan dari f(x) = x³?',opts:['2x²','3x²','3x³','x²'],ans:1},{q:'Chain rule digunakan untuk mendiferensialkan...',opts:['Fungsi penjumlahan','Fungsi perkalian','Fungsi komposit','Fungsi pembagian'],ans:2},{q:'Turunan dari sin(x) adalah...',opts:['cos(x)','-cos(x)','tan(x)','-sin(x)'],ans:0},{q:'Jika f(x) = 5, maka f\'(x) = ...',opts:['5','1','0','x'],ans:2}],
+    docs:[{name:'Lecture Notes — Session 10',type:'PDF',size:'2.4 MB',icon:'ti-file-text'},{name:'Practice Problems Set 10',type:'PDF',size:'1.1 MB',icon:'ti-clipboard-list'},{name:'Derivatives Formula Sheet',type:'PDF',size:'0.5 MB',icon:'ti-file-description'}]
+  },
+  ai:{name:'Artificial Intelligence',code:'COMP6048001',credit:'3/1',cls:'LD01 - LEC',bgClass:'cc-ai',icon:'ti-cpu',progress:63,session:10,total:16,color:'#0e2e1a',
+    facilitators:[{init:'AN',color:'#0e2e1a',name:'Anderies, B.Eng., S.Kom., M.Kom.',role:'Lead Lecturer'},{init:'RW',color:'#1e40af',name:'Dr. Reza Wibawa',role:'Lecturer'}],
+    attendance:{present:9,absent:0,permit:1,late:0,sessions:[{n:1,s:'P'},{n:2,s:'P'},{n:3,s:'P'},{n:4,s:'P'},{n:5,s:'P'},{n:6,s:'Pe'},{n:7,s:'P'},{n:8,s:'P'},{n:9,s:'P'},{n:10,s:'-'}]},
+    grades:[{type:'Quiz 1',score:90,max:100,grade:'A'},{type:'Quiz 2',score:88,max:100,grade:'B'},{type:'Assignment 1',score:92,max:100,grade:'A'},{type:'Assignment 2',score:85,max:100,grade:'B'},{type:'Midterm',score:91,max:100,grade:'A'},{type:'Quiz 3',score:null,max:100,grade:'-'}],
+    people:[{init:'AN',color:'#0e2e1a',name:'Anderies, M.Kom.',nim:'L0011',role:'Lecturer'},{init:'RW',color:'#1e40af',name:'Dr. Reza Wibawa',nim:'L0012',role:'Lecturer'},{init:'OM',color:'#e87722',name:'Jane Doe',nim:'2602123456',role:'Student'},{init:'ZA',color:'#0d9488',name:'Zahra Aini',nim:'2602111222',role:'Student'},{init:'BN',color:'#7c3aed',name:'Bintang Nugraha',nim:'2602222333',role:'Student'},{init:'IS',color:'#b45309',name:'Indira Sari',nim:'2602333444',role:'Student'},{init:'MR',color:'#dc2626',name:'M. Rizky',nim:'2602444555',role:'Student'},{init:'AS',color:'#0369a1',name:'Anisa Safitri',nim:'2602555666',role:'Student'},{init:'YP',color:'#166534',name:'Yogi Pratama',nim:'2602666777',role:'Student'}],
+    forumPosts:[{id:1,auth:'Anderies, M.Kom.',init:'AN',color:'#0e2e1a',time:'Tue 08:00',body:'Forum Session 10: Neural Networks. Silakan diskusikan konsep perceptron, activation functions, dan backpropagation.',replies:[{auth:'Zahra Aini',init:'ZA',color:'#0d9488',time:'Tue 09:30',text:'Pak, untuk activation function ReLU, apakah ada kelemahan dibanding sigmoid?'}]},{id:2,auth:'Bintang Nugraha',init:'BN',color:'#7c3aed',time:'Tue 11:00',body:'Sudah coba implementasi simple neural network pakai numpy. Ada yang mau collab buat tugas ini?',img:null,replies:[]}],
+    quizQuestions:[{q:'Apa kepanjangan dari AI?',opts:['Automated Input','Artificial Intelligence','Artificial Integration','Automated Intelligence'],ans:1},{q:'Algoritma Tic-Tac-Toe optimal menggunakan search algorithm...',opts:['BFS','DFS','Minimax','A*'],ans:2},{q:'Supervised learning membutuhkan...',opts:['Data tanpa label','Data berlabel','Reward signal','Random data'],ans:1},{q:'Activation function yang outputnya antara 0 dan 1 adalah...',opts:['ReLU','Tanh','Sigmoid','Linear'],ans:2}],
+    docs:[{name:'Lecture Slides — Neural Networks',type:'PPT',size:'5.2 MB',icon:'ti-presentation'},{name:'Lab Guide: Neural Net with Python',type:'PDF',size:'1.8 MB',icon:'ti-code'},{name:'Reading: Deep Learning Overview',type:'PDF',size:'3.1 MB',icon:'ti-file-text'}]
+  },
+  bio:{name:'Computational Biology',code:'SCIE6062001',credit:'2/1',cls:'LR01 - LEC',bgClass:'cc-bio',icon:'ti-dna',progress:28,session:10,total:26,color:'#1e1040',
+    facilitators:[{init:'RA',color:'#1e1040',name:'Dr. Rina Ariani',role:'Lead Lecturer'},{init:'BW',color:'#065f46',name:'Budi Wicaksono, M.Sc.',role:'Lecturer'},{init:'NA',color:'#9d174d',name:'Novita Anggraeni',role:'Teaching Assistant'}],
+    attendance:{present:7,absent:2,permit:1,late:0,sessions:[{n:1,s:'P'},{n:2,s:'P'},{n:3,s:'A'},{n:4,s:'P'},{n:5,s:'P'},{n:6,s:'P'},{n:7,s:'A'},{n:8,s:'P'},{n:9,s:'Pe'},{n:10,s:'-'}]},
+    grades:[{type:'Quiz 1',score:75,max:100,grade:'C'},{type:'Quiz 2',score:80,max:100,grade:'B'},{type:'Assignment 1',score:82,max:100,grade:'B'},{type:'Assignment 2',score:78,max:100,grade:'C'},{type:'Midterm',score:70,max:100,grade:'C'},{type:'Quiz 3',score:null,max:100,grade:'-'}],
+    people:[{init:'RA',color:'#1e1040',name:'Dr. Rina Ariani',nim:'L0021',role:'Lecturer'},{init:'BW',color:'#065f46',name:'Budi Wicaksono',nim:'L0022',role:'Lecturer'},{init:'NA',color:'#9d174d',name:'Novita Anggraeni',nim:'L0023',role:'TA'},{init:'OM',color:'#e87722',name:'Jane Doe',nim:'2602123456',role:'Student'},{init:'CL',color:'#0d9488',name:'Claudia Lim',nim:'2602101010',role:'Student'},{init:'HF',color:'#7c3aed',name:'Hendra Firmansyah',nim:'2602202020',role:'Student'},{init:'DP',color:'#b45309',name:'Dewi Pertiwi',nim:'2602303030',role:'Student'},{init:'AL',color:'#dc2626',name:'Andi Laksono',nim:'2602404040',role:'Student'},{init:'ST',color:'#0369a1',name:'Sinta Tri',nim:'2602505050',role:'Student'}],
+    forumPosts:[{id:1,auth:'Dr. Rina Ariani',init:'RA',color:'#1e1040',time:'Wed 07:30',body:'Forum Session 10: Sequence Alignment. Diskusikan algoritma Needleman-Wunsch dan Smith-Waterman. Apa perbedaan utama keduanya?',replies:[{auth:'Claudia Lim',init:'CL',color:'#0d9488',time:'Wed 08:45',text:'Needleman-Wunsch untuk global alignment, Smith-Waterman untuk local alignment. Betul kan, Bu?'}]},{id:2,auth:'Hendra Firmansyah',init:'HF',color:'#7c3aed',time:'Wed 10:00',body:'Coba share paper tentang BLAST algorithm yang berguna buat tugas sequence alignment. Kalau ada yang tau referensi bagus boleh share juga.',img:null,replies:[{auth:'Dr. Rina Ariani',init:'RA',color:'#1e1040',time:'Wed 11:00',text:'Bagus sekali Hendra! Paper dari Altschul et al. (1990) adalah referensi utama untuk BLAST. Bisa diakses di PubMed.'}]}],
+    quizQuestions:[{q:'DNA terdiri dari basa nitrogen. Pasangan basa A adalah...',opts:['G','C','T','U'],ans:2},{q:'BLAST singkatan dari...',opts:['Basic Local Alignment Search Tool','Binary Large Alignment Sequence Tool','Biological Local Analysis Search Tool','Basic Linear Alignment Sequence Tool'],ans:0},{q:'Needleman-Wunsch digunakan untuk...',opts:['Local sequence alignment','Global sequence alignment','Protein folding','Gene expression'],ans:1},{q:'Dalam double helix DNA, strand bersifat...',opts:['Paralel','Antiparalel','Circular','Random'],ans:1}],
+    docs:[{name:'Lecture Notes — Sequence Alignment',type:'PDF',size:'3.2 MB',icon:'ti-file-text'},{name:'Needleman-Wunsch Algorithm Guide',type:'PDF',size:'1.5 MB',icon:'ti-file-description'},{name:'Lab: BLAST Practice',type:'PDF',size:'0.9 MB',icon:'ti-code'}]
+  }
+};
+
+let prevPage='dashboard';
+let activeCourse=null;
+let uploadedFiles=[];
+let quizAnswers={};
+let quizSubmitted=false;
+
+function showPage(id,navEl,title){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  document.getElementById('topbar-section').textContent=title;
+  if(navEl) setNav(navEl);
+}
+function setNav(el){
+  document.querySelectorAll('.nav-link').forEach(n=>n.classList.remove('active'));
+  el.classList.add('active');
+}
+function switchTab(el){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+}
+function toggleNotif(){
+  const p=document.getElementById('notif-panel');
+  p.classList.toggle('open');
+}
+document.addEventListener('click',e=>{
+  if(!e.target.closest('.topbar-right')) document.getElementById('notif-panel').classList.remove('open');
+});
+
+function showToast(msg){
+  const t=document.getElementById('toast');
+  document.getElementById('toast-msg').textContent=msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3500);
+}
+
+function showCourse(key){
+  activeCourse=key;
+  quizAnswers={};
+  quizSubmitted=false;
+  const c=courses[key];
+  document.getElementById('cd-header-content').innerHTML=`
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;">
+      <div>
+        <div style="font-size:12px;color:var(--color-text-secondary);margin-bottom:4px;">${c.code} · Credit ${c.credit}</div>
+        <div class="cd-title">${c.name}</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin:8px 0 12px;">
+          <span class="chip"><i class="ti ti-award" aria-hidden="true"></i> Credit ${c.credit}</span>
+          <span class="chip"><i class="ti ti-users" aria-hidden="true"></i> ${c.cls}</span>
+        </div>
+        <div style="font-size:11px;font-weight:500;color:var(--color-text-secondary);margin-bottom:8px;">Facilitators</div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          ${c.facilitators.map(f=>`<div style="display:flex;align-items:center;gap:8px;"><div class="fac-avatar" style="background:${f.color};color:#fff;">${f.init}</div><div><div style="font-size:12px;font-weight:500;">${f.name}</div><div style="font-size:11px;color:var(--color-text-secondary);">${f.role}</div></div></div>`).join('')}
+        </div>
+      </div>
+      <div style="background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:12px 16px;min-width:140px;flex-shrink:0;">
+        <div style="font-size:11px;color:var(--color-text-secondary);margin-bottom:4px;">Progress</div>
+        <div style="font-size:22px;font-weight:500;margin-bottom:6px;">${c.progress}%</div>
+        <div class="prog-bar" style="height:5px;"><div class="prog-fill" style="width:${c.progress}%;"></div></div>
+        <div style="font-size:11px;color:var(--color-text-secondary);margin-top:6px;">Session ${c.session} of ${c.total}</div>
+      </div>
+    </div>`;
+  document.getElementById('cd-nav').innerHTML=
+    ['Session','Forum','Assessment','Gradebook','People','Attendance']
+    .map((t,i)=>`<button class="cd-nav-btn${i===0?' active':''}" onclick="switchCdTab(this,'${t.toLowerCase()}')">${t}</button>`).join('');
+  renderSessionTab(c);
+  prevPage='courses';
+  showPage('course-detail',null,c.name);
+  document.querySelectorAll('.nav-link').forEach(n=>{if(n.textContent.trim().startsWith('Courses'))n.classList.add('active');else n.classList.remove('active');});
+}
+
+function goBack(){
+  showPage(prevPage,null,prevPage==='dashboard'?'My Dashboard':'Courses');
+  document.querySelectorAll('.nav-link').forEach(n=>{
+    const txt=n.textContent.trim();
+    if((prevPage==='dashboard'&&txt.startsWith('Dashboard'))||(prevPage==='courses'&&txt.startsWith('Courses')))n.classList.add('active');
+    else n.classList.remove('active');
+  });
+}
+
+function showAnnouncements(){
+  showPage('announcements',null,'Announcements');
+}
+
+function switchCdTab(el,tab){
+  document.querySelectorAll('.cd-nav-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  const c=courses[activeCourse];
+  if(tab==='session') renderSessionTab(c);
+  else if(tab==='forum') renderForum(c);
+  else if(tab==='assessment') renderAssessment(c);
+  else if(tab==='gradebook') renderGradebook(c);
+  else if(tab==='people') renderPeople(c);
+  else if(tab==='attendance') renderAttendance(c);
+}
+
+/* SESSION */
+function renderSessionTab(c){
+  const sessions=c.quizQuestions?[{num:1,done:true},{num:2,done:true},{num:3,done:true},{num:4,done:true},{num:5,done:true},{num:6,done:true},{num:7,done:true},{num:8,done:true},{num:9,done:true},{num:10,done:false,current:true}]:[];
+  const sData={calc:{title:'Derivatives Review',outcomes:['(C2) Explain the fundamental theorem of calculus and applications in real-world problems','(C4) Apply differentiation rules to solve optimization and related rate problems'],subtopics:['Product & Quotient Rules','Chain Rule Advanced','Implicit Differentiation','Related Rates','Optimization Problems'],things:[{icon:'ti-wifi',name:'WiFi Attendance',dur:'1h 40m'},{icon:'ti-video',name:'Video Conference',dur:'1h 40m'},{icon:'ti-file-text',name:'Lecture Notes',dur:'15m'},{icon:'ti-pencil',name:'Practice Set 10',dur:'30m'}]},ai:{title:'Neural Networks',outcomes:['(C3) Implement a basic feedforward neural network using Python','(C4) Analyze how backpropagation updates weights in a neural network'],subtopics:['Perceptron Model','Activation Functions','Forward Propagation','Backpropagation','Gradient Descent'],things:[{icon:'ti-wifi',name:'WiFi Attendance',dur:'1h 40m'},{icon:'ti-video',name:'Video Conference',dur:'1h 40m'},{icon:'ti-code',name:'Lab: Neural Net',dur:'45m'},{icon:'ti-file-text',name:'Reading Material',dur:'20m'}]},bio:{title:'Sequence Alignment',outcomes:['(C2) Explain basic concepts of Genomics, Proteomics, Bioinformatics, Sequence Alignment and Molecular Evolution','(C4) Identify real-world applications of Sequence Alignment and Molecular Evolution'],subtopics:['Heuristic Database Searching','Homology, Similarity, and Identity','Needleman-Wunsch Algorithm','Smith-Waterman Algorithm','BLAST Score & E-value'],things:[{icon:'ti-wifi',name:'WiFi Attendance',dur:'1h 40m'},{icon:'ti-video',name:'Video Conference',dur:'1h 40m'},{icon:'ti-file-text',name:'Sequence Alignment',dur:'10m'},{icon:'ti-link',name:'Needleman-Wunsch Algo',dur:'15m'}]}};
+  const s=sData[activeCourse];
+  document.getElementById('cd-body-wrap').innerHTML=`
+    <div class="cd-body">
+      <div class="cd-content">
+        <div class="cd-session-tabs">${[1,2,3,4,5,6,7,8,9,10].map(n=>`<button class="sess-tab${n===10?' active':''}">
+          ${n}${n!==10?`<span class="sess-dot" style="background:${n<10?'#22c55e':'#e87722'};"></span>`:''}</button>`).join('')}<button class="sess-tab" style="color:var(--color-text-secondary);">3 more ▾</button></div>
+        <div class="topic-title">${s.title}</div>
+        <div class="topic-sub">Learning Outcomes</div>
+        ${s.outcomes.map(o=>`<div class="outcome-box"><div class="outcome-tag">${o.substring(1,3)}</div><div class="outcome-text">${o.substring(5)}</div></div>`).join('')}
+        <div class="topic-sub" style="margin-top:10px;">Sub Topics</div>
+        <ul class="topic-list">${s.subtopics.map(st=>`<li>${st}</li>`).join('')}</ul>
+      </div>
+      <div>
+        <div class="things-card">
+          <div class="things-title">Things to do · Session ${c.session}</div>
+          ${s.things.map(t=>`<div class="thing-item" onclick="hMaterialOpen('${t.name}')"><div class="thing-ic"><i class="ti ${t.icon}" aria-hidden="true"></i></div><div><div class="thing-name">${t.name}</div><div class="thing-dur">${t.dur}</div></div><div class="thing-actions"><button class="thing-ic-btn" aria-label="Download" onclick="hMaterialOpen('${t.name}'); event.stopPropagation();"><i class="ti ti-download" aria-hidden="true"></i></button><button class="thing-ic-btn" aria-label="More"><i class="ti ti-dots-vertical" aria-hidden="true"></i></button></div></div>`).join('')}
+        </div>
+        <div class="info-stats">
+          <div class="stat-box"><div class="stat-lbl">Present</div><div class="stat-val good">${c.attendance.present}x</div></div>
+          <div class="stat-box"><div class="stat-lbl">Absent</div><div class="stat-val${c.attendance.absent>1?' warn':''}">${c.attendance.absent}x</div></div>
+          <div class="stat-box"><div class="stat-lbl">Permit</div><div class="stat-val">${c.attendance.permit}x</div></div>
+          <div class="stat-box"><div class="stat-lbl">Late</div><div class="stat-val">${c.attendance.late}x</div></div>
+        </div>
+        <div class="mini-att">
+          <div class="mini-att-title">Recent sessions</div>
+          ${c.attendance.sessions.slice(-5).map(ss=>`<div class="mini-att-row"><span>Session ${ss.n}</span><span style="font-size:12px;font-weight:500;color:${ss.s==='P'?'var(--color-text-success)':ss.s==='A'?'var(--color-text-danger)':ss.s==='Pe'?'var(--color-text-warning)':'var(--color-text-tertiary)'};">${ss.s==='P'?'Present':ss.s==='A'?'Absent':ss.s==='Pe'?'Permit':'Upcoming'}</span></div>`).join('')}
+        </div>
+      </div>
+    </div>`;
+}
+
+/* FORUM */
+function renderForum(c){
+  uploadedFiles=[];
+  document.getElementById('cd-body-wrap').innerHTML=`
+    <div class="cd-full">
+      <div class="forum-compose">
+        <div class="forum-compose-title">New post</div>
+        <textarea class="compose-input" id="forum-text" rows="3" placeholder="Share your thoughts, questions, or resources..."></textarea>
+        <div id="file-previews"></div>
+        <div class="compose-toolbar">
+          <label class="compose-tb-btn" style="cursor:pointer;"><i class="ti ti-paperclip" aria-hidden="true"></i> Attach file<input type="file" id="forum-file-input" style="display:none;" multiple onchange="handleFileAttach(this)"></label>
+          <label class="compose-tb-btn" style="cursor:pointer;"><i class="ti ti-photo" aria-hidden="true"></i> Image<input type="file" id="forum-img-input" style="display:none;" accept="image/*" onchange="handleImgAttach(this)"></label>
+          <button class="compose-submit" onclick="submitForum()"><i class="ti ti-send" style="font-size:12px;" aria-hidden="true"></i> Post</button>
+        </div>
+      </div>
+      ${c.forumPosts.map(p=>`
+        <div class="forum-post" id="fp-${p.id}">
+          <div class="forum-post-hd">
+            <div class="forum-avatar" style="background:${p.color};">${p.init}</div>
+            <div><div class="forum-author">${p.auth}</div><div class="forum-time">${p.time}</div></div>
+          </div>
+          <div class="forum-body">${p.body}</div>
+          ${p.img?`<div class="forum-img"><img src="${p.img}" alt="post image"></div>`:''}
+          ${p.replies.map(r=>`<div class="forum-reply"><div class="forum-reply-auth">${r.auth} · ${r.time}</div><div class="forum-reply-text">${r.text}</div></div>`).join('')}
+          <div class="forum-actions">
+            <button class="forum-action-btn" onclick="likePost(${p.id})"><i class="ti ti-thumb-up" aria-hidden="true"></i> <span id="like-${p.id}">Like</span></button>
+            <button class="forum-action-btn" onclick="replyPost(${p.id})"><i class="ti ti-message-reply" aria-hidden="true"></i> Reply</button>
+          </div>
+          <div id="reply-box-${p.id}"></div>
+        </div>`).join('')}
+    </div>`;
+}
+
+function handleFileAttach(input){
+  Array.from(input.files).forEach(f=>{
+    uploadedFiles.push({name:f.name,type:'file'});
+    renderFilePreviews();
+  });
+}
+function handleImgAttach(input){
+  if(input.files[0]){
+    const r=new FileReader();
+    r.onload=e=>{uploadedFiles.push({name:input.files[0].name,type:'img',src:e.target.result});renderFilePreviews();};
+    r.readAsDataURL(input.files[0]);
+  }
+}
+function renderFilePreviews(){
+  const el=document.getElementById('file-previews');
+  if(!el)return;
+  el.innerHTML=uploadedFiles.map((f,i)=>`<div class="file-preview"><i class="ti ${f.type==='img'?'ti-photo':'ti-file'}" style="font-size:14px;color:var(--color-text-secondary);" aria-hidden="true"></i><span class="file-preview-name">${f.name}</span><span class="file-remove" onclick="removeFile(${i})"><i class="ti ti-x" aria-hidden="true"></i></span></div>`).join('');
+}
+function removeFile(i){uploadedFiles.splice(i,1);renderFilePreviews();}
+
+function submitForum(){
+  const txt=document.getElementById('forum-text').value.trim();
+  if(!txt&&uploadedFiles.length===0)return;
+  showToast('Done, will be checked');
+  document.getElementById('forum-text').value='';
+  uploadedFiles=[];
+  renderFilePreviews();
+  if(window.hDone)window.hDone();
+}
+function likePost(id){
+  const el=document.getElementById('like-'+id);
+  if(el.textContent==='Like'){el.textContent='Liked ✓';}
+  else{el.textContent='Like';}
+}
+function replyPost(id){
+  const box=document.getElementById('reply-box-'+id);
+  if(box.innerHTML){box.innerHTML='';return;}
+  box.innerHTML=`<div style="display:flex;gap:8px;margin-top:8px;"><textarea class="compose-input" id="reply-text-${id}" rows="2" placeholder="Write a reply..." style="flex:1;"></textarea><button class="compose-submit" style="align-self:flex-end;" onclick="submitReply(${id})">Send</button></div>`;
+}
+function submitReply(id){
+  const txt=document.getElementById('reply-text-'+id);
+  if(!txt.value.trim())return;
+  showToast('Done, will be checked');
+  document.getElementById('reply-box-'+id).innerHTML='';
+}
+
+/* ASSESSMENT */
+function renderAssessment(c){
+  quizAnswers={};quizSubmitted=false;
+  document.getElementById('cd-body-wrap').innerHTML=`
+    <div class="cd-full">
+      <div style="font-size:13px;font-weight:500;margin-bottom:12px;display:flex;align-items:center;gap:8px;"><i class="ti ti-files" aria-hidden="true"></i> Course Materials</div>
+      ${c.docs.map(d=>`<div class="assess-doc"><div class="assess-doc-icon"><i class="ti ${d.icon}" aria-hidden="true"></i></div><div><div class="assess-doc-name">${d.name}</div><div class="assess-doc-meta">${d.type} · ${d.size}</div></div><button class="assess-doc-dl" onclick="showToast('Downloading ${d.name}...')"><i class="ti ti-download" aria-hidden="true"></i> Download</button></div>`).join('')}
+      <div style="margin-top:20px;" class="quiz-section">
+        <div class="quiz-title"><i class="ti ti-pencil" aria-hidden="true"></i> Quiz — Session ${c.session}</div>
+        <div class="quiz-meta"><span><i class="ti ti-clock" aria-hidden="true"></i> 15 minutes</span><span><i class="ti ti-list-numbers" aria-hidden="true"></i> ${c.quizQuestions.length} questions</span><span><i class="ti ti-award" aria-hidden="true"></i> 100 points</span></div>
+        <div id="quiz-questions">
+          ${c.quizQuestions.map((q,qi)=>`
+            <div class="quiz-q">
+              <div class="quiz-q-text">${qi+1}. ${q.q}</div>
+              ${q.opts.map((opt,oi)=>`<div class="quiz-opt" id="opt-${qi}-${oi}" onclick="selectOpt(${qi},${oi})">
+                <input type="radio" name="q${qi}" id="r${qi}-${oi}" style="flex-shrink:0;">
+                <label for="r${qi}-${oi}" style="cursor:pointer;">${opt}</label>
+              </div>`).join('')}
+            </div>`).join('')}
+        </div>
+        <button class="quiz-submit" id="quiz-submit-btn" onclick="submitQuiz()">Submit Quiz</button>
+      </div>
+    </div>`;
+}
+function selectOpt(qi,oi){
+  if(quizSubmitted)return;
+  const c=courses[activeCourse];
+  document.querySelectorAll(`[id^="opt-${qi}-"]`).forEach(el=>el.classList.remove('selected'));
+  document.getElementById(`opt-${qi}-${oi}`).classList.add('selected');
+  document.getElementById(`r${qi}-${oi}`).checked=true;
+  quizAnswers[qi]=oi;
+}
+function submitQuiz(){
+  const c=courses[activeCourse];
+  const total=c.quizQuestions.length;
+  const answered=Object.keys(quizAnswers).length;
+  if(answered<total){showToast('Please answer all questions first');return;}
+  quizSubmitted=true;
+  c.quizQuestions.forEach((q,qi)=>{
+    const sel=quizAnswers[qi];
+    c.quizQuestions[qi].opts.forEach((opt,oi)=>{
+      const el=document.getElementById(`opt-${qi}-${oi}`);
+      if(oi===q.ans){el.classList.add('correct');el.classList.remove('selected');}
+      else if(oi===sel&&sel!==q.ans){el.classList.add('wrong');el.classList.remove('selected');}
+    });
+  });
+  document.getElementById('quiz-submit-btn').disabled=true;
+  showToast('Done, will be checked');
+  const notifList=document.getElementById('notif-list');
+  notifList.insertAdjacentHTML('afterbegin',`<div class="notif-item"><div class="notif-title"><span class="notif-dot"></span>Quiz submitted</div><div class="notif-sub">${c.name} · Session ${c.session}</div><div class="notif-time">just now</div></div>`);
+  if(window.hDone)window.hDone();
+}
+
+/* GRADEBOOK */
+function renderGradebook(c){
+  const avg=Math.round(c.grades.filter(g=>g.score!==null).reduce((a,b)=>a+b.score,0)/c.grades.filter(g=>g.score!==null).length);
+  const highest=Math.max(...c.grades.filter(g=>g.score!==null).map(g=>g.score));
+  const gradeColor={A:'grade-a',B:'grade-b',C:'grade-c','-':'grade-pending'};
+  document.getElementById('cd-body-wrap').innerHTML=`
+    <div class="cd-full">
+      <div class="grade-summary">
+        <div class="grade-stat"><div class="grade-stat-val">${avg}</div><div class="grade-stat-lbl">Average score</div></div>
+        <div class="grade-stat"><div class="grade-stat-val">${highest}</div><div class="grade-stat-lbl">Highest score</div></div>
+        <div class="grade-stat"><div class="grade-stat-val">${c.grades.filter(g=>g.score!==null).length}</div><div class="grade-stat-lbl">Completed</div></div>
+        <div class="grade-stat"><div class="grade-stat-val">${c.grades.filter(g=>g.score===null).length}</div><div class="grade-stat-lbl">Pending</div></div>
+      </div>
+      <table class="grade-table">
+        <thead><tr><th>Assessment</th><th>Score</th><th>Max</th><th>Grade</th><th>Progress</th></tr></thead>
+        <tbody>
+          ${c.grades.map(g=>`<tr>
+            <td style="font-weight:500;">${g.type}</td>
+            <td>${g.score!==null?g.score:'—'}</td>
+            <td style="color:var(--color-text-secondary);">${g.max}</td>
+            <td><span class="grade-badge ${gradeColor[g.grade]}">${g.grade}</span></td>
+            <td style="width:120px;">${g.score!==null?`<div class="prog-bar" style="height:4px;"><div class="prog-fill" style="width:${g.score}%;background:${g.score>=90?'#22c55e':g.score>=75?'#e87722':'#ef4444'};"></div></div>`:'<span style="font-size:11px;color:var(--color-text-tertiary);">Not graded yet</span>'}</td>
+          </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>`;
+}
+
+/* ATTENDANCE TAB */
+function renderAttendance(c){
+  const statusMap={P:{label:'Present',cls:'att-p'},A:{label:'Absent',cls:'att-a'},Pe:{label:'Permit',cls:'att-pe'},L:{label:'Late',cls:'att-l'},'-':{label:'Upcoming',cls:'grade-pending'}};
+  document.getElementById('cd-body-wrap').innerHTML=`
+    <div class="cd-full">
+      <div class="att-summary-row">
+        <div class="att-sum-box"><div class="att-sum-num" style="color:var(--color-text-success);">${c.attendance.present}</div><div class="att-sum-lbl">Present</div></div>
+        <div class="att-sum-box"><div class="att-sum-num" style="color:var(--color-text-danger);">${c.attendance.absent}</div><div class="att-sum-lbl">Absent</div></div>
+        <div class="att-sum-box"><div class="att-sum-num" style="color:var(--color-text-warning);">${c.attendance.permit}</div><div class="att-sum-lbl">Permit</div></div>
+        <div class="att-sum-box"><div class="att-sum-num">${c.attendance.late}</div><div class="att-sum-lbl">Late</div></div>
+        <div class="att-sum-box"><div class="att-sum-num" style="font-size:14px;">${c.attendance.absent<=2?'✅ Good':'⚠️ Warning'}</div><div class="att-sum-lbl">Status</div></div>
+      </div>
+      <table class="att-table">
+        <thead><tr><th>Session</th><th>Date</th><th>Topic</th><th>Status</th><th>Check-in time</th></tr></thead>
+        <tbody>
+          ${c.attendance.sessions.map((ss,i)=>{
+            const s=statusMap[ss.s]||{label:ss.s,cls:'grade-pending'};
+            const dates=['5 Feb','12 Feb','19 Feb','26 Feb','5 Mar','12 Mar','19 Mar','26 Mar','2 Apr','9 Apr'];
+            const topics={calc:['Limits','Differentiation','Chain Rule','Implicit Diff.','Applications','Curve Sketching','Optimization','Integration','Definite Integrals','Derivatives Review'],ai:['Intro AI','Search Alg.','Knowledge Repr.','Prop. Logic','First-Order Logic','Planning','ML Intro','Supervised','Unsupervised','Neural Networks'],bio:['Intro CompBio','Cell Biology','Genomics','DNA Sequencing','Proteomics','Bioinformatics DB','BLAST','Phylogenetics','Molecular Evolution','Sequence Alignment']};
+            return `<tr><td>Session ${ss.n}</td><td style="color:var(--color-text-secondary);">${dates[i]||'—'}</td><td style="color:var(--color-text-secondary);">${topics[activeCourse][i]||'—'}</td><td><span class="att-pill ${s.cls}">${s.label}</span></td><td style="font-size:11px;color:var(--color-text-tertiary);font-family:var(--font-mono);">${ss.s==='P'?'08:0'+Math.floor(Math.random()*9)+' AM':ss.s==='L'?'08:2'+Math.floor(Math.random()*9)+' AM':'—'}</td></tr>`;
+          }).join('')}
+        </tbody>
+      </table>
+    </div>`;
+}
+
+/* PEOPLE */
+function renderPeople(c){
+  document.getElementById('cd-body-wrap').innerHTML=`
+    <div class="cd-full">
+      <div class="people-search">
+        <i class="ti ti-search" style="font-size:15px;color:var(--color-text-secondary);" aria-hidden="true"></i>
+        <input type="text" placeholder="Search by name or NIM..." oninput="filterPeople(this.value)" id="people-search-input">
+        <span style="font-size:11px;color:var(--color-text-secondary);">${c.people.length} members</span>
+      </div>
+      <div class="people-grid" id="people-grid">
+        ${c.people.map(p=>{
+          const roleColor={Lecturer:'background:var(--color-background-info);color:var(--color-text-info);',TA:'background:var(--color-background-warning);color:var(--color-text-warning);',Student:'background:var(--color-background-secondary);color:var(--color-text-secondary);'};
+          const isMe=p.nim==='2602123456';
+          return `<div class="people-card${isMe?' people-highlight':''}" data-name="${p.name.toLowerCase()}" data-nim="${p.nim}">
+            <div class="people-av" style="background:${p.color};">${p.init}</div>
+            <div class="people-name">${p.name}${isMe?' (You)':''}</div>
+            <div class="people-nim">${p.nim}</div>
+            <span class="people-role-badge" style="${roleColor[p.role]}">${p.role}</span>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>`;
+}
+function filterPeople(q){
+  const lower=q.toLowerCase();
+  document.querySelectorAll('.people-card').forEach(card=>{
+    const name=card.dataset.name||'';
+    const nim=card.dataset.nim||'';
+    card.style.display=(name.includes(lower)||nim.includes(lower))?'':'none';
+  });
+}
+
+// Task harness integration
+function hMaterialOpen(materialName){
+  if(window.hDone)window.hDone();
+}
+
+function hAnnouncementRead(announcementTitle){
+  if(window.hDone)window.hDone();
+}
+
+function hAssignmentSubmit(){
+  if(window.hDone)window.hDone();
+}
+</script>
+<script>
+window.HARNESS_DESIGN="Design B";
+window.HARNESS_SHEET="https://script.google.com/macros/s/AKfycbxiHyKRZJds7BXEcxG6q5Ny_tqVfw0JY77uJRwdHx5314YbKkLrJu2MAV059liK9-is/exec";
+</script>
+<!-- ======= TASK HARNESS ======= -->
+<style>
+#h-overlay{position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.55);backdrop-filter:blur(3px);}
+#h-overlay.h-hidden{display:none;}
+.h-card{background:var(--color-background-primary,#fff);border-radius:14px;border:0.5px solid var(--color-border-tertiary,#e5e7eb);padding:28px 30px;width:380px;max-width:92vw;box-shadow:0 16px 48px rgba(0,0,0,.22);font-family:var(--font-sans,system-ui);color:var(--color-text-primary,#111);}
+.h-badge{display:inline-block;font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;background:rgba(232,119,34,.12);color:#e87722;padding:3px 9px;border-radius:20px;margin-bottom:14px;}
+.h-title{font-size:20px;font-weight:600;margin-bottom:10px;line-height:1.3;}
+.h-desc{font-size:13px;color:var(--color-text-secondary,#555);line-height:1.65;margin-bottom:6px;}
+.h-hint{font-size:11px;color:var(--color-text-tertiary,#999);margin-bottom:20px;line-height:1.5;}
+.h-btn{width:100%;padding:11px;border-radius:8px;border:none;font-size:14px;font-weight:600;cursor:pointer;background:#e87722;color:#fff;}
+.h-btn:hover{opacity:.88;}
+.h-input{width:100%;border:0.5px solid var(--color-border-tertiary,#ddd);border-radius:8px;padding:9px 12px;font-size:13px;background:var(--color-background-secondary,#f9fafb);color:var(--color-text-primary,#111);font-family:inherit;margin-bottom:14px;box-sizing:border-box;}
+.h-input:focus{outline:none;border-color:#e87722;}
+.h-steps{display:flex;gap:6px;margin-bottom:20px;}
+.h-step{flex:1;height:4px;border-radius:2px;background:var(--color-background-secondary,#e5e7eb);}
+.h-step.done{background:#e87722;}
+.h-step.active{background:#e87722;opacity:.5;}
+#h-bar{position:fixed;top:0;left:0;right:0;z-index:99990;height:38px;background:var(--color-background-primary,#fff);border-bottom:1px solid var(--color-border-tertiary,#e5e7eb);display:none;align-items:center;padding:0 14px;gap:10px;font-size:12px;font-family:var(--font-sans,system-ui);}
+#h-bar.h-vis{display:flex;}
+#h-bar-badge{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;background:rgba(232,119,34,.12);color:#e87722;padding:2px 8px;border-radius:20px;white-space:nowrap;}
+#h-bar-task{font-weight:500;color:var(--color-text-primary,#111);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+#h-bar-time{font-weight:700;color:#e87722;font-family:monospace;min-width:40px;text-align:right;}
+#h-bar-done{background:#e87722;color:#fff;border:none;padding:5px 13px;border-radius:5px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;margin-left:8px;}
+.h-rows{background:var(--color-background-secondary,#f3f4f6);border-radius:8px;padding:12px 14px;margin-bottom:16px;}
+.h-row{display:flex;justify-content:space-between;padding:5px 0;border-bottom:0.5px solid var(--color-border-tertiary,#e5e7eb);font-size:12px;}
+.h-row:last-child{border:none;}
+.h-row-lbl{color:var(--color-text-secondary,#555);flex:1;padding-right:8px;}
+.h-row-val{font-weight:700;font-family:monospace;}
+#h-send-status{font-size:11px;text-align:center;margin-top:8px;min-height:16px;color:var(--color-text-secondary,#888);}
+</style>
+
+<div id="h-bar">
+  <span id="h-bar-badge"></span>
+  <span id="h-bar-task"></span>
+  <span id="h-bar-time">0:00</span>
+</div>
+<div id="h-overlay">
+  <div class="h-card" id="h-card"></div>
+</div>
+
+<script>
+(function(){
+  var DESIGN = window.HARNESS_DESIGN || 'Design ?';
+  var SHEET  = window.HARNESS_SHEET  || '';
+  var TASKS = [
+    {id:'t1',title:'Check an announcement',
+     desc:'Find and <strong>read the full text</strong> of the announcement titled \u201cMidterm Exam Schedule Released\u201d.',
+     hint:''},
+    {id:'t2',title:'Open a session material',
+     desc:'Go to the <strong>Artificial Intelligence</strong> course, find <strong>Session 10</strong>, and open the <strong>Session Video</strong> resource.',
+     hint:''},
+    {id:'t3',title:'Submit an assignment',
+     desc:'Submit <strong>Assignment 3</strong> for <strong>Computational Biology</strong>. Upload any file to complete it.',
+     hint:''},
+    {id:'t4',title:'Post on the forum',
+     desc:'Go to the <strong>Calculus</strong> course forum and <strong>post any message</strong>.',
+     hint:''}
+  ];
+  var pid='',cur=-1,t0=null,results=[],errors=0,ticker=null;
+
+  showWelcome();
+
+  function showWelcome(){
+    cur=-1; stopTick();
+    setCard(
+      '<div class="h-badge">'+DESIGN+'</div>'+
+      '<div class="h-title">Usability Study</div>'+
+      '<p class="h-desc" style="margin-bottom:16px;">Welcome! You will complete <strong>4 short tasks</strong> on this interface. Each task is timed \u2014 work at your normal pace.<br><br>Please enter your Student ID (NIM) to begin.</p>'+
+      '<input class="h-input" id="h-nim" placeholder="e.g. 2602123456" maxlength="20" onkeydown="if(event.key===\'Enter\')hSetPid()">'+
+      '<button class="h-btn" onclick="hSetPid()">Continue \u2192</button>'
+    );
+    show(); hideBar();
+    setTimeout(function(){var el=document.getElementById('h-nim');if(el)el.focus();},80);
+  }
+  window.hSetPid=function(){
+    var el=document.getElementById('h-nim');
+    var v=el?el.value.trim():'';
+    if(!v){if(el){el.style.borderColor='#ef4444';setTimeout(function(){el.style.borderColor='';},900);}return;}
+    pid=v; showIntro(0);
+  };
+  function showIntro(i){
+    cur=-1; stopTick(); hideBar();
+    var t=TASKS[i];
+    var dots=TASKS.map(function(_,j){return '<div class="h-step'+(j<i?' done':j===i?' active':'')+'"></div>';}).join('');
+    setCard(
+      '<div class="h-steps">'+dots+'</div>'+
+      '<div class="h-badge">Task '+(i+1)+' of '+TASKS.length+'</div>'+
+      '<div class="h-title">'+t.title+'</div>'+
+      '<div class="h-desc">'+t.desc+'</div>'+
+      '<div class="h-hint">'+t.hint+'</div>'+
+      '<button class="h-btn" onclick="hStart('+i+')">Start task \u2192</button>'
+    );
+    show();
+  }
+  window.hStart=function(i){cur=i;errors=0;t0=Date.now();hide();showBar(i);startTick();};
+  window.hDone=function(){
+    if(cur<0)return;
+    var elapsed=Date.now()-t0;
+    stopTick();hideBar();
+    results.push({id:TASKS[cur].id,label:TASKS[cur].title,ms:elapsed,errors:errors});
+    var next=cur+1;cur=-1;
+    if(next<TASKS.length){showIntro(next);}
+    else{sendResults();showEnd();}
+  };
+  function showEnd(){
+    var rows=results.map(function(r){
+      return '<div class="h-row"><span class="h-row-lbl">'+r.label+'</span><span class="h-row-val">'+fmt(r.ms)+'</span></div>';
+    }).join('');
+    setCard(
+      '<div style="font-size:36px;text-align:center;margin-bottom:12px;">\ud83c\udf89</div>'+
+      '<div class="h-title" style="text-align:center;">All done!</div>'+
+      '<p class="h-desc" style="text-align:center;margin-bottom:14px;">Thank you, <strong>'+pid+'</strong>. Your completion times:</p>'+
+      '<div class="h-rows">'+rows+'</div>'+
+      '<p class="h-desc" style="text-align:center;font-size:12px;">Please complete the <strong>NASA-TLX</strong> and <strong>SUS</strong> survey from the researcher.</p>'+
+      '<div id="h-send-status">Sending results\u2026</div>'
+    );
+    show();
+  }
+  function sendResults(){
+    var payload=JSON.stringify({
+      participant:pid,design:DESIGN,timestamp:new Date().toISOString(),
+      tasks:results.map(function(r){return {task:r.label,seconds:(r.ms/1000).toFixed(2),errors:r.errors};})
+    });
+    if(!SHEET){setTimeout(function(){setSendStatus('\u26a0\ufe0f No sheet URL set \u2014 note times above manually.',false);},300);return;}
+    fetch(SHEET,{method:'POST',mode:'no-cors',body:payload})
+      .then(function(){setSendStatus('\u2705 Results saved to Google Sheets!',true);})
+      .catch(function(){setSendStatus('\u274c Network error \u2014 note times above manually.',false);});
+  }
+  function setSendStatus(msg,ok){
+    var el=document.getElementById('h-send-status');
+    if(el){el.textContent=msg;el.style.color=ok?'#22c55e':'#ef4444';el.style.fontWeight='600';}
+  }
+  function showBar(i){
+    document.getElementById('h-bar-badge').textContent='Task '+(i+1)+'/'+TASKS.length;
+    document.getElementById('h-bar-task').textContent=TASKS[i].title;
+    document.getElementById('h-bar-time').textContent='0:00';
+    document.getElementById('h-bar').className='h-vis';
+  }
+  function hideBar(){document.getElementById('h-bar').className='';}
+  function startTick(){ticker=setInterval(function(){if(t0)document.getElementById('h-bar-time').textContent=fmt(Date.now()-t0);},500);}
+  function stopTick(){if(ticker){clearInterval(ticker);ticker=null;}}
+  function fmt(ms){var s=Math.floor(ms/1000);return Math.floor(s/60)+':'+(s%60<10?'0':'')+(s%60);}
+  function setCard(html){document.getElementById('h-card').innerHTML=html;}
+  function show(){document.getElementById('h-overlay').className='';}
+  function hide(){document.getElementById('h-overlay').className='h-hidden';}
+})();
+</script>
+<!-- ======= END HARNESS ======= -->
