@@ -10,10 +10,8 @@ const courses = [
     { title: "Scientific Computing", code: "MATH6183001", section: "LO01", progress: 28, type: "LEC" },
 
     // LAB Data (New Section)
-    { title: "Data Structures - Lab", code: "COMP6048001", section: "LB01", progress: 15, type: "LAB" },
     { title: "Scientific Computing - Lab", code: "MATH6183001", section: "LB02", progress: 40, type: "LAB" },
     { title: "Human and Computer Interaction - Lab", code: "COMP6800001", section: "LB01", progress: 12, type: "LAB" },
-    { title: "Physics Lab", code: "PHYS6011001", section: "LB05", progress: 85, type: "LAB" }
 ];
 
 function renderCourses(filter) {
